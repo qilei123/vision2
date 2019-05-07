@@ -137,7 +137,6 @@ class DatasetFolder(VisionDataset):
         """
     
         path, target = self.samples[index]
-        print(target)
         sample = self.loader(path)
         if self.transform is not None:
             sample = self.transform(sample)
