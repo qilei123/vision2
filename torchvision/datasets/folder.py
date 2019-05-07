@@ -135,7 +135,9 @@ class DatasetFolder(VisionDataset):
         Returns:
             tuple: (sample, target) where target is class_index of the target class.
         """
+    
         path, target = self.samples[index]
+        print(target)
         sample = self.loader(path)
         if self.transform is not None:
             sample = self.transform(sample)
