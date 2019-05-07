@@ -48,6 +48,8 @@ def make_dataset(dir, class_to_idx, extensions=None, is_valid_file=None):
             for fname in sorted(fnames):
                 path = os.path.join(root, fname)
                 if is_valid_file(path):
+                    print(class_to_idx)
+                    print(target)
                     item = (path, class_to_idx[target])
                     images.append(item)
 
