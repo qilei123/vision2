@@ -150,6 +150,7 @@ class DatasetFolder(VisionDataset):
         return len(self.samples)
 
 
+
 IMG_EXTENSIONS = ('.jpg', '.jpeg', '.png', '.ppm', '.bmp', '.pgm', '.tif', '.tiff', '.webp')
 
 
@@ -211,3 +212,7 @@ class ImageFolder(DatasetFolder):
                                           target_transform=target_transform,
                                           is_valid_file=is_valid_file)
         self.imgs = self.samples
+    def get_imgs(self):
+        return self.imgs
+    def set_imgs(self,imgs):
+        self.samples = imgs
