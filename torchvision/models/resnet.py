@@ -3,8 +3,12 @@ from .utils import load_state_dict_from_url
 
 
 __all__ = ['ResNet', 'resnet18', 'resnet34', 'resnet50', 'resnet101',
-           'resnet152', 'resnext50_32x4d', 'resnext101_32x8d']
+           'resnet152', 'resnext50_32x4d', 'resnext101_32x8d','resnet101_wide']
 
+large_size_input = False
+conv1_kernel_size = 7
+conv1_padding_size = 3
+conv1_stride_size = 2
 
 model_urls = {
     'resnet18': 'https://download.pytorch.org/models/resnet18-5c106cde.pth',
@@ -130,8 +134,16 @@ class ResNet(nn.Module):
                              "or a 3-element tuple, got {}".format(replace_stride_with_dilation))
         self.groups = groups
         self.base_width = width_per_group
-        self.conv1 = nn.Conv2d(3, self.inplanes, kernel_size=7, stride=2, padding=3,
+
+        if large_size_input:
+            self.conv1 = nn.Conv2d(3, self.inplanes, kernel_size=conv1_kernel_size, stride=conv1_stride_size, padding=conv1_padding_size,
+                               bias=False)            
+        else:
+            self.conv1 = nn.Conv2d(3, self.inplanes, kernel_size=7, stride=2, padding=3,
                                bias=False)
+        
+        
+        
         self.bn1 = norm_layer(self.inplanes)
         self.relu = nn.ReLU(inplace=True)
         self.maxpool = nn.MaxPool2d(kernel_size=3, stride=2, padding=1)
@@ -256,6 +268,19 @@ def resnet101(pretrained=False, progress=True, **kwargs):
     return _resnet('resnet101', Bottleneck, [3, 4, 23, 3], pretrained, progress,
                    **kwargs)
 
+def resnet101_wide(pretrained=False, progress=True, **kwargs):
+    """Constructs a ResNet-101 model.
+
+    Args:
+        pretrained (bool): If True, returns a model pre-trained on ImageNet
+        progress (bool): If True, displays a progress bar of the download to stderr
+    """
+    large_size_input = True
+    conv1_kernel_size = 15
+    conv1_padding_size = 7
+    conv1_stride_size = 5
+    return _resnet('resnet101', Bottleneck, [3, 4, 23, 3], False, progress,
+                   **kwargs)
 
 def resnet152(pretrained=False, progress=True, **kwargs):
     """Constructs a ResNet-152 model.
