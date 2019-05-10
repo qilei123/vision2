@@ -75,10 +75,13 @@ def inception_v3_wide(pretrained=False, progress=True, **kwargs):
             kwargs['aux_logits'] = True
         else:
             original_aux_logits = True
-        model = Inception3(**kwargs)
+        model = Inception3(wide = True,**kwargs)
         state_dict = load_state_dict_from_url(model_urls['inception_v3_google'],
                                               progress=progress)
-        model.load_state_dict(state_dict)
+        model_dict=model.state_dict()
+        pretrained_dict = {k: v for k, v in state_dict.items() if not('Conv2d_1a_3x3' in k)}
+        model_dict.update(pretrained_dict)
+        model.load_state_dict(model_dict)
         if not original_aux_logits:
             model.aux_logits = False
             del model.AuxLogits
@@ -92,6 +95,7 @@ class Inception3(nn.Module):
         super(Inception3, self).__init__()
         self.aux_logits = aux_logits
         self.transform_input = transform_input
+        print(wide)
         if wide:
             self.Conv2d_1a_3x3 = BasicConv2d(3, 32, kernel_size=15, stride=5,padding = 7)
         else:
