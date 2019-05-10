@@ -138,7 +138,7 @@ class ResNet(nn.Module):
         print('-------------------')
         print(large_size_input)
         if large_size_input:
-            self.conv1_wide = nn.Conv2d(3, self.inplanes, kernel_size=conv1_kernel_size, stride=conv1_stride_size, padding=conv1_padding_size,
+            self.conv1 = nn.Conv2d(3, self.inplanes, kernel_size=conv1_kernel_size, stride=conv1_stride_size, padding=conv1_padding_size,
                                bias=False)            
         else:
             self.conv1 = nn.Conv2d(3, self.inplanes, kernel_size=7, stride=2, padding=3,
@@ -225,7 +225,7 @@ def _resnet(arch, inplanes, planes, pretrained, progress, **kwargs):
                                               progress=progress)
         model_dict=model.state_dict()
         
-        pretrained_dict = {k: v for k, v in state_dict.items() if k in model_dict}
+        pretrained_dict = {k: v for k, v in state_dict.items() if not('conv1' in k)}
         model_dict.update(pretrained_dict)
         model.load_state_dict(model_dict)
     return model
