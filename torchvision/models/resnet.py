@@ -15,6 +15,7 @@ model_urls = {
     'resnet34': 'https://download.pytorch.org/models/resnet34-333f7ec4.pth',
     'resnet50': 'https://download.pytorch.org/models/resnet50-19c8e357.pth',
     'resnet101': 'https://download.pytorch.org/models/resnet101-5d3b4d8f.pth',
+    'resnet101_wide': 'https://download.pytorch.org/models/resnet101-5d3b4d8f.pth',
     'resnet152': 'https://download.pytorch.org/models/resnet152-b121ed2d.pth',
 }
 
@@ -222,7 +223,11 @@ def _resnet(arch, inplanes, planes, pretrained, progress, **kwargs):
     if pretrained:
         state_dict = load_state_dict_from_url(model_urls[arch],
                                               progress=progress)
-        model.load_state_dict(state_dict)
+        model_dict=model.state_dict()
+        
+        pretrained_dict = {k: v for k, v in state_dict.items() if k in model_dict}
+
+        model.load_state_dict(pretrained_dict)
     return model
 
 
@@ -280,7 +285,8 @@ def resnet101_wide(pretrained=False, progress=True, **kwargs):
     conv1_kernel_size = 15
     conv1_padding_size = 7
     conv1_stride_size = 5
-    return _resnet('resnet101', Bottleneck, [3, 4, 23, 3], False, progress,
+    return _resnet('resnet101', Bottleneck, [3, 4, 23, 3], pretrained, progress,
+                    large_size_input = True,
                    **kwargs)
 
 def resnet152(pretrained=False, progress=True, **kwargs):
