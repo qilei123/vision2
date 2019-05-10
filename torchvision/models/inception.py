@@ -5,7 +5,7 @@ import torch.nn.functional as F
 from .utils import load_state_dict_from_url
 
 
-__all__ = ['Inception3', 'inception_v3']
+__all__ = ['Inception3', 'inception_v3','inception_v3_wide']
 
 
 model_urls = {
@@ -51,14 +51,51 @@ def inception_v3(pretrained=False, progress=True, **kwargs):
 
     return Inception3(**kwargs)
 
+def inception_v3_wide(pretrained=False, progress=True, **kwargs):
+    r"""Inception v3 model architecture from
+    `"Rethinking the Inception Architecture for Computer Vision" <http://arxiv.org/abs/1512.00567>`_.
+
+    .. note::
+        **Important**: In contrast to the other models the inception_v3 expects tensors with a size of
+        N x 3 x 299 x 299, so ensure your images are sized accordingly.
+
+    Args:
+        pretrained (bool): If True, returns a model pre-trained on ImageNet
+        progress (bool): If True, displays a progress bar of the download to stderr
+        aux_logits (bool): If True, add an auxiliary branch that can improve training.
+            Default: *True*
+        transform_input (bool): If True, preprocesses the input according to the method with which it
+            was trained on ImageNet. Default: *False*
+    """
+    if pretrained:
+        if 'transform_input' not in kwargs:
+            kwargs['transform_input'] = True
+        if 'aux_logits' in kwargs:
+            original_aux_logits = kwargs['aux_logits']
+            kwargs['aux_logits'] = True
+        else:
+            original_aux_logits = True
+        model = Inception3(**kwargs)
+        state_dict = load_state_dict_from_url(model_urls['inception_v3_google'],
+                                              progress=progress)
+        model.load_state_dict(state_dict)
+        if not original_aux_logits:
+            model.aux_logits = False
+            del model.AuxLogits
+        return model
+
+    return Inception3(wide = True,**kwargs)
 
 class Inception3(nn.Module):
 
-    def __init__(self, num_classes=1000, aux_logits=True, transform_input=False):
+    def __init__(self, num_classes=1000, aux_logits=True, transform_input=False,wide = False):
         super(Inception3, self).__init__()
         self.aux_logits = aux_logits
         self.transform_input = transform_input
-        self.Conv2d_1a_3x3 = BasicConv2d(3, 32, kernel_size=3, stride=2)
+        if wide:
+            self.Conv2d_1a_3x3 = BasicConv2d(3, 32, kernel_size=15, stride=5,padding = 7)
+        else:
+            self.Conv2d_1a_3x3 = BasicConv2d(3, 32, kernel_size=3, stride=2)
         self.Conv2d_2a_3x3 = BasicConv2d(32, 32, kernel_size=3)
         self.Conv2d_2b_3x3 = BasicConv2d(32, 64, kernel_size=3, padding=1)
         self.Conv2d_3b_1x1 = BasicConv2d(64, 80, kernel_size=1)
