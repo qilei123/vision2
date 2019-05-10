@@ -286,7 +286,6 @@ def resnet101_wide(pretrained=False, progress=True, **kwargs):
     conv1_padding_size = 7
     conv1_stride_size = 5
     return _resnet('resnet101', Bottleneck, [3, 4, 23, 3], pretrained, progress,
-                    large_size_input = True,
                    **kwargs)
 
 def resnet152(pretrained=False, progress=True, **kwargs):
