@@ -138,7 +138,7 @@ class ResNet(nn.Module):
         print('-------------------')
         print(large_size_input)
         if large_size_input:
-            self.conv1 = nn.Conv2d(3, self.inplanes, kernel_size=conv1_kernel_size, stride=conv1_stride_size, padding=conv1_padding_size,
+            self.conv1_wide = nn.Conv2d(3, self.inplanes, kernel_size=conv1_kernel_size, stride=conv1_stride_size, padding=conv1_padding_size,
                                bias=False)            
         else:
             self.conv1 = nn.Conv2d(3, self.inplanes, kernel_size=7, stride=2, padding=3,
