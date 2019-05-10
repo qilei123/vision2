@@ -93,7 +93,7 @@ class Inception3(nn.Module):
         self.aux_logits = aux_logits
         self.transform_input = transform_input
         if wide:
-            self.Conv2d_1a_3x3 = BasicConv2d(3, 32, kernel_size=15, stride=5)
+            self.Conv2d_1a_3x3 = BasicConv2d(3, 32, kernel_size=15, stride=5,padding = 7)
         else:
             self.Conv2d_1a_3x3 = BasicConv2d(3, 32, kernel_size=3, stride=2)
         self.Conv2d_2a_3x3 = BasicConv2d(32, 32, kernel_size=3)
