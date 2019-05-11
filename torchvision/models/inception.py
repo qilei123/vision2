@@ -91,12 +91,16 @@ def inception_v3_wide(pretrained=False, progress=True, **kwargs):
 
 class Inception3(nn.Module):
 
-    def __init__(self, num_classes=1000, aux_logits=True, transform_input=False,wide = False):
+    def __init__(self, num_classes=1000, aux_logits=True, transform_input=False,wide = False,wider = False):
         super(Inception3, self).__init__()
         self.aux_logits = aux_logits
         self.transform_input = transform_input
-        print(wide)
-        if wide:
+        self.wider = wider
+        if wider:
+            self.Conv2d_1a_3x3a = BasicConv2d(3, 32, kernel_size=15, stride=5,padding = 7)
+            self.Conv2d_1a_3x3b = BasicConv2d(3, 32, kernel_size=31, stride=5,padding = 15)
+            self.Conv2d_1a_3x3c = BasicConv2d(3, 32, kernel_size=61, stride=5,padding = 30)
+        elif wide:
             self.Conv2d_1a_3x3 = BasicConv2d(3, 32, kernel_size=15, stride=5,padding = 7)
         else:
             self.Conv2d_1a_3x3 = BasicConv2d(3, 32, kernel_size=3, stride=2)
@@ -139,7 +143,13 @@ class Inception3(nn.Module):
             x_ch2 = torch.unsqueeze(x[:, 2], 1) * (0.225 / 0.5) + (0.406 - 0.5) / 0.5
             x = torch.cat((x_ch0, x_ch1, x_ch2), 1)
         # N x 3 x 299 x 299
-        x = self.Conv2d_1a_3x3(x)
+        if self.wider:
+            x1 = self.Conv2d_1a_3x3a(x)
+            x2 = self.Conv2d_1a_3x3b(x)
+            x3 = self.Conv2d_1a_3x3c(x)
+            x = x1+x2+x3
+        else:
+            x = self.Conv2d_1a_3x3(x)
         # N x 32 x 149 x 149
         x = self.Conv2d_2a_3x3(x)
         # N x 32 x 147 x 147

@@ -118,7 +118,7 @@ class ResNet(nn.Module):
 
     def __init__(self, block, layers, num_classes=1000, zero_init_residual=False,
                  groups=1, width_per_group=64, replace_stride_with_dilation=None,
-                 norm_layer=None,large_size_input = False):
+                 norm_layer=None,large_size_input = False,wider_kernel = False):
         super(ResNet, self).__init__()
         if norm_layer is None:
             norm_layer = nn.BatchNorm2d
@@ -137,7 +137,15 @@ class ResNet(nn.Module):
         self.base_width = width_per_group
         print('-------------------')
         print(large_size_input)
-        if large_size_input:
+        self.wider = wider_kernel
+        if wider_kernel:
+            self.conv1a = nn.Conv2d(3, self.inplanes, kernel_size=15, stride=5, padding=7,
+                               bias=False)
+            self.conv1b = nn.Conv2d(3, self.inplanes, kernel_size=31, stride=5, padding=15,
+                               bias=False)
+            self.conv1c = nn.Conv2d(3, self.inplanes, kernel_size=61, stride=5, padding=30,
+                               bias=False)
+        elif large_size_input:
             self.conv1 = nn.Conv2d(3, self.inplanes, kernel_size=conv1_kernel_size, stride=conv1_stride_size, padding=conv1_padding_size,
                                bias=False)            
         else:
@@ -201,7 +209,13 @@ class ResNet(nn.Module):
         return nn.Sequential(*layers)
 
     def forward(self, x):
-        x = self.conv1(x)
+        if self.wider:
+            x1 = conv1a(x)
+            x2 = conv1b(x)
+            x3 = conv1c(x)
+            x = x1+x2+x3
+        else:
+            x = self.conv1(x)
         x = self.bn1(x)
         x = self.relu(x)
         x = self.maxpool(x)
@@ -275,6 +289,20 @@ def resnet101(pretrained=False, progress=True, **kwargs):
                    **kwargs)
 
 def resnet101_wide(pretrained=False, progress=True, **kwargs):
+    """Constructs a ResNet-101 model.
+
+    Args:
+        pretrained (bool): If True, returns a model pre-trained on ImageNet
+        progress (bool): If True, displays a progress bar of the download to stderr
+    """
+    large_size_input = True
+    conv1_kernel_size = 15
+    conv1_padding_size = 7
+    conv1_stride_size = 5
+    return _resnet('resnet101', Bottleneck, [3, 4, 23, 3], pretrained, progress,
+                   **kwargs)
+
+def resnet101_wider(pretrained=False, progress=True, **kwargs):
     """Constructs a ResNet-101 model.
 
     Args:
