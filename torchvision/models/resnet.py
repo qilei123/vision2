@@ -118,7 +118,7 @@ class ResNet(nn.Module):
 
     def __init__(self, block, layers, num_classes=1000, zero_init_residual=False,
                  groups=1, width_per_group=64, replace_stride_with_dilation=None,
-                 norm_layer=None,large_size_input = False,wider_kernel = False):
+                 norm_layer=None,large_size_input = False,wider = False):
         super(ResNet, self).__init__()
         if norm_layer is None:
             norm_layer = nn.BatchNorm2d
@@ -137,8 +137,8 @@ class ResNet(nn.Module):
         self.base_width = width_per_group
         print('-------------------')
         print(large_size_input)
-        self.wider = wider_kernel
-        if wider_kernel:
+        self.wider = wider
+        if wider:
             self.conv1a = nn.Conv2d(3, self.inplanes, kernel_size=15, stride=5, padding=7,
                                bias=False)
             self.conv1b = nn.Conv2d(3, self.inplanes, kernel_size=31, stride=5, padding=15,
