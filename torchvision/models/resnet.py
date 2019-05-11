@@ -210,9 +210,9 @@ class ResNet(nn.Module):
 
     def forward(self, x):
         if self.wider:
-            x1 = conv1a(x)
-            x2 = conv1b(x)
-            x3 = conv1c(x)
+            x1 = self.conv1a(x)
+            x2 = self.conv1b(x)
+            x3 = self.conv1c(x)
             x = x1+x2+x3
         else:
             x = self.conv1(x)
