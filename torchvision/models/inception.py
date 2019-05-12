@@ -153,7 +153,7 @@ class Inception3(nn.Module):
             x_ch2 = torch.unsqueeze(x[:, 2], 1) * (0.225 / 0.5) + (0.406 - 0.5) / 0.5
             x = torch.cat((x_ch0, x_ch1, x_ch2), 1)
         # N x 3 x 299 x 299
-        if self.wider:
+        if self.wider or self.bigger_wider:
             x1 = self.Conv2d_1a_3x3a(x)
             x2 = self.Conv2d_1a_3x3b(x)
             x3 = self.Conv2d_1a_3x3c(x)
