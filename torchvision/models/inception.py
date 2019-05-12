@@ -75,7 +75,7 @@ def inception_v3_wide(pretrained=False, progress=True, **kwargs):
             kwargs['aux_logits'] = True
         else:
             original_aux_logits = True
-        model = Inception3(wide = True,**kwargs)
+        model = Inception3(**kwargs)
         state_dict = load_state_dict_from_url(model_urls['inception_v3_google'],
                                               progress=progress)
         model_dict=model.state_dict()
@@ -91,12 +91,19 @@ def inception_v3_wide(pretrained=False, progress=True, **kwargs):
 
 class Inception3(nn.Module):
 
-    def __init__(self, num_classes=1000, aux_logits=True, transform_input=False,wide = False,wider = False):
+    def __init__(self, num_classes=1000, aux_logits=True, transform_input=False,
+                            wide = False,wider = False,wide2=False,wider2=False):
         super(Inception3, self).__init__()
         self.aux_logits = aux_logits
         self.transform_input = transform_input
         self.wider = wider
-        if wider:
+        self.wide2 = wide2
+        self.wider2 = wider2
+        if wide2:
+            pass
+        elif wider2:
+            self.Conv2d_1a_3x3 = BasicConv2d_wider2(3, 32)
+        elif wider:
             self.Conv2d_1a_3x3a = BasicConv2d(3, 32, kernel_size=15, stride=5,padding = 7)
             self.Conv2d_1a_3x3b = BasicConv2d(3, 32, kernel_size=31, stride=5,padding = 15)
             self.Conv2d_1a_3x3c = BasicConv2d(3, 32, kernel_size=61, stride=5,padding = 30)
@@ -401,5 +408,33 @@ class BasicConv2d(nn.Module):
 
     def forward(self, x):
         x = self.conv(x)
+        x = self.bn(x)
+        return F.relu(x, inplace=True)
+
+class BasicConv2d_wide2(nn.Module):
+
+    def __init__(self, in_channels, out_channels, **kwargs):
+        super(BasicConv2d, self).__init__()
+        self.conv = nn.Conv2d(in_channels, out_channels, bias=False, **kwargs)
+        self.bn = nn.BatchNorm2d(out_channels, eps=0.001)
+
+    def forward(self, x):
+        x = self.conv(x)
+        x = self.bn(x)
+        return F.relu(x, inplace=True)
+class BasicConv2d_wider2(nn.Module):
+
+    def __init__(self, in_channels, out_channels, **kwargs):
+        super(BasicConv2d, self).__init__()
+        self.conv1 = nn.Conv2d(in_channels, out_channels, bias=False, kernel_size=15, stride=5,padding = 7)
+        self.conv2 = nn.Conv2d(in_channels, out_channels, bias=False, kernel_size=31, stride=5,padding = 15)
+        self.conv3 = nn.Conv2d(in_channels, out_channels, bias=False, kernel_size=61, stride=5,padding = 30)
+        self.bn = nn.BatchNorm2d(out_channels, eps=0.001)
+
+    def forward(self, x):
+        x1 = self.conv1(x)
+        x2 = self.conv2(x)
+        x3 = self.conv3(x)
+        x = x1+x2+x3
         x = self.bn(x)
         return F.relu(x, inplace=True)

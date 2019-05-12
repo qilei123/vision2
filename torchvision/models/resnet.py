@@ -135,8 +135,7 @@ class ResNet(nn.Module):
                              "or a 3-element tuple, got {}".format(replace_stride_with_dilation))
         self.groups = groups
         self.base_width = width_per_group
-        print('-------------------')
-        print(large_size_input)
+
         self.wider = wider
         if wider:
             self.conv1a = nn.Conv2d(3, self.inplanes, kernel_size=15, stride=5, padding=7,
