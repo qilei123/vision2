@@ -92,15 +92,18 @@ def inception_v3_wide(pretrained=False, progress=True, **kwargs):
 class Inception3(nn.Module):
 
     def __init__(self, num_classes=1000, aux_logits=True, transform_input=False,
-                            wide = False,wider = False,wide2=False,wider2=False):
+                            wide = False,wider = False,wide2=False,wider2=False,bigger_wider = False):
         super(Inception3, self).__init__()
         self.aux_logits = aux_logits
         self.transform_input = transform_input
         self.wider = wider
         self.wide2 = wide2
         self.wider2 = wider2
-        if wide2:
-            pass
+        self.bigger_wider = bigger_wider
+        if bigger_wider:
+            self.Conv2d_1a_3x3a = BasicConv2d(3, 32, kernel_size=21, stride=10,padding = 10)
+            self.Conv2d_1a_3x3b = BasicConv2d(3, 32, kernel_size=41, stride=10,padding = 20)
+            self.Conv2d_1a_3x3c = BasicConv2d(3, 32, kernel_size=81, stride=10,padding = 40)
         elif wider2:
             self.Conv2d_1a_3x3 = BasicConv2d_wider2(3, 32)
         elif wider:
