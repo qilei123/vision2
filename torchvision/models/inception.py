@@ -414,7 +414,7 @@ class BasicConv2d(nn.Module):
 class BasicConv2d_wide2(nn.Module):
 
     def __init__(self, in_channels, out_channels, **kwargs):
-        super(BasicConv2d, self).__init__()
+        super(BasicConv2d_wide2, self).__init__()
         self.conv = nn.Conv2d(in_channels, out_channels, bias=False, **kwargs)
         self.bn = nn.BatchNorm2d(out_channels, eps=0.001)
 
@@ -425,7 +425,7 @@ class BasicConv2d_wide2(nn.Module):
 class BasicConv2d_wider2(nn.Module):
 
     def __init__(self, in_channels, out_channels, **kwargs):
-        super(BasicConv2d, self).__init__()
+        super(BasicConv2d_wider2, self).__init__()
         self.conv1 = nn.Conv2d(in_channels, out_channels, bias=False, kernel_size=15, stride=5,padding = 7)
         self.conv2 = nn.Conv2d(in_channels, out_channels, bias=False, kernel_size=31, stride=5,padding = 15)
         self.conv3 = nn.Conv2d(in_channels, out_channels, bias=False, kernel_size=61, stride=5,padding = 30)
