@@ -1,6 +1,6 @@
 import torch.nn as nn
 from .utils import load_state_dict_from_url
-
+import torch
 
 __all__ = ['ResNet', 'resnet18', 'resnet34', 'resnet50', 'resnet101',
            'resnet152', 'resnext50_32x4d', 'resnext101_32x8d','resnet101_wide']
@@ -208,6 +208,10 @@ class ResNet(nn.Module):
         return nn.Sequential(*layers)
 
     def forward(self, x):
+        x_ch0 = torch.unsqueeze(x[:, 0], 1) * (0.229 / 0.5) + (0.485 - 0.5) / 0.5
+        x_ch1 = torch.unsqueeze(x[:, 1], 1) * (0.224 / 0.5) + (0.456 - 0.5) / 0.5
+        x_ch2 = torch.unsqueeze(x[:, 2], 1) * (0.225 / 0.5) + (0.406 - 0.5) / 0.5
+        x = torch.cat((x_ch0, x_ch1, x_ch2), 1)
         if self.wider:
             x1 = self.conv1a(x)
             x2 = self.conv1b(x)
