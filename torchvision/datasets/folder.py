@@ -6,9 +6,11 @@ import os
 import os.path
 import sys
 import torch
-
+import json
+import numpy as np
+import cv2
 DEBUG = False
-
+HEATMAP=False
 def has_file_allowed_extension(filename, extensions):
     """Checks if a file is an allowed extension.
 
@@ -55,6 +57,17 @@ def make_dataset(dir, class_to_idx, extensions=None, is_valid_file=None):
 
     return images
 
+
+def resize_flip(filename,input_size,srcarray):
+    srcarray=cv2.resize(srcarray,(input_size,input_size))
+    if '_vflip' in filename:
+        srcarray = cv2.flip(srcarray,1)
+    elif '_hflip' in filename:
+        srcarray = cv2.flip(srcarray,0)
+    elif '_vhflip' in filename:
+        srcarray = cv2.flip(srcarray,1)
+        srcarray = cv2.flip(srcarray,0)
+    return srcarray
 
 class DatasetFolder(VisionDataset):
     """A generic data loader where the samples are arranged in this way: ::
@@ -106,8 +119,11 @@ class DatasetFolder(VisionDataset):
         self.class_to_idx = class_to_idx
         self.samples = samples
         self.targets = [s[1] for s in samples]
-
-        print(self.root)
+        if HEATMAP:
+            self.heatmap_0_Hemorrhages_json = json.load(open(os.path.join(self.root.replace('_aug','')+'_heatmap','0','Hemorrhages','positive_heatmap.json')))
+            self.heatmap_0_Microaneurysms_json = json.load(open(os.path.join(self.root.replace('_aug','')+'_heatmap','0','Microaneurysms','positive_heatmap.json')))
+            self.heatmap_0_Hard_Exudate_json = json.load(open(os.path.join(self.root.replace('_aug','')+'_heatmap','0','Hard_Exudate','positive_heatmap.json')))
+            self.heatmap_0_Cotton_Wool_Spot_json = json.load(open(os.path.join(self.root.replace('_aug','')+'_heatmap','0','Cotton_Wool_Spot','positive_heatmap.json')))
 
     def _find_classes(self, dir):
         """
@@ -130,7 +146,48 @@ class DatasetFolder(VisionDataset):
         classes.sort()
         class_to_idx = {classes[i]: i for i in range(len(classes))}
         return classes, class_to_idx
+    def get_heatmap(self,image_path,input_size):
 
+        lesion_category = ['Hemorrhages','Microaneurysms','Hard_Exudate','Cotton_Wool_Spot']
+
+        image_filename = os.path.basename(image_path)
+
+        original_image_filename = image_filename.replace('_vflip','')
+        original_image_filename = image_filename.replace('_hflip','')
+        original_image_filename = image_filename.replace('_vhflip','')
+
+        if '/0/' in image_path:
+
+            pass
+        else:
+            heat_map_folder = image_path.replace(image_filename,'')
+            if '/train_aug/' in heat_map_folder:
+                heat_map_npy_path = heat_map_folder.replace('/train_aug/','/train_heatmap/')
+            elif '/train/' in heat_map_folder:
+                heat_map_npy_path = heat_map_folder.replace('/train/','/train_heatmap/')
+            elif '/val_aug/' in heat_map_folder:
+                heat_map_npy_path = heat_map_folder.replace('/val_aug/','/val_heatmap/')
+            elif '/val/' in heat_map_folder:
+                heat_map_npy_path = heat_map_folder.replace('/val/','/val_heatmap/')
+
+            heatmap1 = np.load(os.path.join(heat_map_npy_path,lesion_category[0],'positive_heatmap',original_image_filename+'.npy'))
+            heatmap1 = resize_flip(image_filename,input_size,heatmap1)
+            
+            heatmap2 = np.load(os.path.join(heat_map_npy_path,lesion_category[1],'positive_heatmap',original_image_filename+'.npy'))
+            heatmap2 = resize_flip(image_filename,input_size,heatmap2)
+            
+            heatmap3 = np.load(os.path.join(heat_map_npy_path,lesion_category[2],'positive_heatmap',original_image_filename+'.npy'))
+            heatmap3 = resize_flip(image_filename,input_size,heatmap3)
+            
+            heatmap4 = np.load(os.path.join(heat_map_npy_path,lesion_category[3],'positive_heatmap',original_image_filename+'.npy'))
+            heatmap4 = resize_flip(image_filename,input_size,heatmap4)
+            
+            heatmap1 = torch.stack([torch.from_numpy(heatmap1)],0)
+            heatmap2 = torch.stack([torch.from_numpy(heatmap2)],0)
+            heatmap3 = torch.stack([torch.from_numpy(heatmap3)],0)
+            heatmap4 = torch.stack([torch.from_numpy(heatmap4)],0)
+            return torch.cat((heatmap1,heatmap2,heatmap3,heatmap4),0)
+            
     def __getitem__(self, index):
         """
         Args:
