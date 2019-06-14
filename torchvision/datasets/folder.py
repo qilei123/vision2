@@ -262,7 +262,7 @@ class DatasetFolder(VisionDataset):
             heatmap = self.get_heatmap(path,2000)
             heatmap = heatmap.type(sample.dtype)
             sample = torch.cat((sample,heatmap),0)
-            print(sample.size())
+            #print(sample.size())
         return sample, target
 
     def __len__(self):
