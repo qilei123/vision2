@@ -5,6 +5,7 @@ from PIL import Image
 import os
 import os.path
 import sys
+import torch
 
 DEBUG = False
 
@@ -149,7 +150,8 @@ class DatasetFolder(VisionDataset):
         if self.target_transform is not None:
             target = self.target_transform(target)
         if not DEBUG:
-            print(sample.size())
+            sample_test = torch.cat((sample, sample), 0)
+            print(sample_test.size())
         return sample, target
 
     def __len__(self):
