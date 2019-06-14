@@ -209,8 +209,10 @@ class DatasetFolder(VisionDataset):
         if self.target_transform is not None:
             target = self.target_transform(target)
         if DEBUG:
-            sample_test = torch.cat((sample, sample), 0)
-            print(sample.size())
+            #sample_test = torch.cat((sample, sample), 0)
+            #print(sample.size())
+            heatmap = self.get_heatmap(path,2000)
+            print(heatmap.size())
         return sample, target
 
     def __len__(self):
