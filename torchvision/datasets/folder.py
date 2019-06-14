@@ -148,7 +148,7 @@ class DatasetFolder(VisionDataset):
             sample = self.transform(sample)
         if self.target_transform is not None:
             target = self.target_transform(target)
-        if DEBUG:
+        if not DEBUG:
             print(sample)
         return sample, target
 
