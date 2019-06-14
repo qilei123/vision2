@@ -206,6 +206,7 @@ class DatasetFolder(VisionDataset):
             heatmap3 = torch.stack([torch.from_numpy(heatmap3)],0)
             heatmap4 = torch.stack([torch.from_numpy(heatmap4)],0)
             heatmap = torch.cat((heatmap1,heatmap2,heatmap3,heatmap4),0)
+            print(0)
             print(heatmap.size())
             print(heatmap.dtype)
             return heatmap
@@ -227,6 +228,7 @@ class DatasetFolder(VisionDataset):
             heatmap3 = torch.stack([torch.from_numpy(heatmap3)],0)
             heatmap4 = torch.stack([torch.from_numpy(heatmap4)],0)
             heatmap = torch.cat((heatmap1,heatmap2,heatmap3,heatmap4),0)
+            print(5)
             print(heatmap.size())
             print(heatmap.dtype)
             return heatmap
