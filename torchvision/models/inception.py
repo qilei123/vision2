@@ -92,7 +92,7 @@ def inception_v3_wide(pretrained=False, progress=True, **kwargs):
 class Inception3(nn.Module):
 
     def __init__(self, num_classes=1000, aux_logits=True, transform_input=False,
-                            wide = False,wider = False,wide2=False,wider2=False,bigger_wider = False):
+                            wide = False,wider = False,wide2=False,wider2=False,bigger_wider = False,with_heatmap=False):
         super(Inception3, self).__init__()
         self.aux_logits = aux_logits
         self.transform_input = transform_input
@@ -100,6 +100,7 @@ class Inception3(nn.Module):
         self.wide2 = wide2
         self.wider2 = wider2
         self.bigger_wider = bigger_wider
+        self.with_heatmap = with_heatmap
         if bigger_wider:
             self.Conv2d_1a_3x3a = BasicConv2d(3, 32, kernel_size=21, stride=10,padding = 10)
             self.Conv2d_1a_3x3b = BasicConv2d(3, 32, kernel_size=41, stride=10,padding = 20)
@@ -112,6 +113,8 @@ class Inception3(nn.Module):
             self.Conv2d_1a_3x3c = BasicConv2d(3, 32, kernel_size=61, stride=5,padding = 30)
         elif wide:
             self.Conv2d_1a_3x3 = BasicConv2d(3, 32, kernel_size=15, stride=5,padding = 7)
+        elif with_heatmap:
+            self.Conv2d_1a_3x3 = BasicConv2d(7, 32, kernel_size=3, stride=2)
         else:
             self.Conv2d_1a_3x3 = BasicConv2d(3, 32, kernel_size=3, stride=2)
         self.Conv2d_2a_3x3 = BasicConv2d(32, 32, kernel_size=3)
