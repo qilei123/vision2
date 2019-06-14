@@ -158,11 +158,12 @@ class DatasetFolder(VisionDataset):
         print(heatmap_json)
         heatmap = np.zeros((heatmap_json['image_shape'][0],heatmap_json['image_shape'][1]))
         bbox_count=0
-        for bbox in heatmap_json['bboxes']:
-            
-            patch_heatmap = np.load(os.path.join(heatmap_path,original_image_filename+'_'+str(bbox_count)+'.npy'))
-            heatmap[int(bbox[1]):int(bbox[1]+bbox[3]),int(bbox[0]):int(bbox[0]+bbox[2])] = patch_heatmap
-            bbox_count+=1
+        if heatmap_json.has_key('bboxes'):
+            for bbox in heatmap_json['bboxes']:
+                
+                patch_heatmap = np.load(os.path.join(heatmap_path,original_image_filename+'_'+str(bbox_count)+'.npy'))
+                heatmap[int(bbox[1]):int(bbox[1]+bbox[3]),int(bbox[0]):int(bbox[0]+bbox[2])] = patch_heatmap
+                bbox_count+=1
 
         heatmap = resize_flip(image_filename,input_size,heatmap)
         return heatmap
