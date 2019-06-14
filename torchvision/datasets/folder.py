@@ -158,7 +158,7 @@ class DatasetFolder(VisionDataset):
 
         if '/0/' in image_path:
 
-            pass
+            return None
         else:
             heat_map_folder = image_path.replace(image_filename,'')
             if '/train_aug/' in heat_map_folder:
@@ -208,11 +208,12 @@ class DatasetFolder(VisionDataset):
             sample = self.transform(sample)
         if self.target_transform is not None:
             target = self.target_transform(target)
-        if DEBUG:
+        if not DEBUG:
             #sample_test = torch.cat((sample, sample), 0)
             #print(sample.size())
             heatmap = self.get_heatmap(path,2000)
-            print(heatmap.size())
+            if not heatmap==None:
+                print(heatmap.size())
         return sample, target
 
     def __len__(self):
