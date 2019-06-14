@@ -207,9 +207,7 @@ class DatasetFolder(VisionDataset):
             heatmap3 = torch.stack([torch.from_numpy(heatmap3)],0)
             heatmap4 = torch.stack([torch.from_numpy(heatmap4)],0)
             heatmap = torch.cat((heatmap1,heatmap2,heatmap3,heatmap4),0)
-            print(0)
-            print(heatmap.size())
-            print(heatmap.dtype)
+
             return heatmap
         else:
             heatmap1 = np.load(os.path.join(heat_map_npy_path,lesion_category[0],'positive_heatmap',original_image_filename+'.npy'))
@@ -229,9 +227,7 @@ class DatasetFolder(VisionDataset):
             heatmap3 = torch.stack([torch.from_numpy(heatmap3)],0)
             heatmap4 = torch.stack([torch.from_numpy(heatmap4)],0)
             heatmap = torch.cat((heatmap1,heatmap2,heatmap3,heatmap4),0)
-            print(5)
-            print(heatmap.size())
-            print(heatmap.dtype)
+
             return heatmap
             
     def __getitem__(self, index):
@@ -266,6 +262,7 @@ class DatasetFolder(VisionDataset):
             heatmap = self.get_heatmap(path,2000)
             heatmap = heatmap.type(sample.dtype)
             sample = torch.cat((sample,heatmap),0)
+            print(sample.size())
         return sample, target
 
     def __len__(self):
