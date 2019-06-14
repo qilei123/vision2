@@ -146,6 +146,27 @@ class DatasetFolder(VisionDataset):
         classes.sort()
         class_to_idx = {classes[i]: i for i in range(len(classes))}
         return classes, class_to_idx
+    def create_heatmap_from_json(self,category_id,input_size,image_filename,original_image_filename,heatmap_path):
+        if category_id==1:
+            heatmap_json = self.heatmap_0_Hemorrhages_json[original_image_filename]
+        elif category_id==2:
+            heatmap_json = self.heatmap_0_Microaneurysms_json[original_image_filename]
+        elif category_id==3:
+            heatmap_json = self.heatmap_0_Hard_Exudate_json[original_image_filename]
+        elif category_id==4:
+            heatmap_json = self.heatmap_0_Cotton_Wool_Spot_json[original_image_filename]
+        
+        heatmap = np.zeros((heatmap_json['image_shape'][0],heatmap_json['image_shape'][1]))
+        bbox_count=0
+        for bbox in heatmap_json['bboxes']:
+            
+            patch_heatmap = np.load(os.path.join(heatmap_path,original_image_filename+'_'+str(bbox_count)+'.npy'))
+            heatmap[int(bbox[1]):int(bbox[1]+bbox[3]),int(bbox[0]):int(bbox[0]+bbox[2])] = patch_heatmap
+            bbox_count+=1
+
+        heatmap = resize_flip(image_filename,input_size,heatmap)
+        return heatmap
+
     def get_heatmap(self,image_path,input_size):
 
         lesion_category = ['Hemorrhages','Microaneurysms','Hard_Exudate','Cotton_Wool_Spot']
@@ -154,6 +175,16 @@ class DatasetFolder(VisionDataset):
         
         original_image_filename = image_filename
 
+        heat_map_folder = image_path.replace(image_filename,'')
+        if '/train_aug/' in heat_map_folder:
+            heat_map_npy_path = heat_map_folder.replace('/train_aug/','/train_heatmap/')
+        elif '/train/' in heat_map_folder:
+            heat_map_npy_path = heat_map_folder.replace('/train/','/train_heatmap/')
+        elif '/val_aug/' in heat_map_folder:
+            heat_map_npy_path = heat_map_folder.replace('/val_aug/','/val_heatmap/')
+        elif '/val/' in heat_map_folder:
+            heat_map_npy_path = heat_map_folder.replace('/val/','/val_heatmap/')
+        
         if '_vflip' in image_filename:
             original_image_filename = image_filename.replace('_vflip','')
         if '_hflip' in image_filename:
@@ -162,19 +193,22 @@ class DatasetFolder(VisionDataset):
             original_image_filename = image_filename.replace('_vhflip','')
 
         if '/0/' in image_path:
-
-            return None
+            heatmap1 = self.create_heatmap_from_json(1,input_size,image_filename,original_image_filename,
+                                os.path.join(heat_map_npy_path,lesion_category[0],'positive_heatmap'))
+            heatmap2 = self.create_heatmap_from_json(2,input_size,image_filename,original_image_filename,
+                                os.path.join(heat_map_npy_path,lesion_category[1],'positive_heatmap'))
+            heatmap3 = self.create_heatmap_from_json(3,input_size,image_filename,original_image_filename,
+                                os.path.join(heat_map_npy_path,lesion_category[2],'positive_heatmap'))
+            heatmap4 = self.create_heatmap_from_json(4,input_size,image_filename,original_image_filename,
+                                os.path.join(heat_map_npy_path,lesion_category[3],'positive_heatmap'))
+            heatmap1 = torch.stack([torch.from_numpy(heatmap1)],0)
+            heatmap2 = torch.stack([torch.from_numpy(heatmap2)],0)
+            heatmap3 = torch.stack([torch.from_numpy(heatmap3)],0)
+            heatmap4 = torch.stack([torch.from_numpy(heatmap4)],0)
+            heatmap = torch.cat((heatmap1,heatmap2,heatmap3,heatmap4),0)
+            print(heatmap.size())
+            print(heatmap.dtype)
         else:
-            heat_map_folder = image_path.replace(image_filename,'')
-            if '/train_aug/' in heat_map_folder:
-                heat_map_npy_path = heat_map_folder.replace('/train_aug/','/train_heatmap/')
-            elif '/train/' in heat_map_folder:
-                heat_map_npy_path = heat_map_folder.replace('/train/','/train_heatmap/')
-            elif '/val_aug/' in heat_map_folder:
-                heat_map_npy_path = heat_map_folder.replace('/val_aug/','/val_heatmap/')
-            elif '/val/' in heat_map_folder:
-                heat_map_npy_path = heat_map_folder.replace('/val/','/val_heatmap/')
-
             heatmap1 = np.load(os.path.join(heat_map_npy_path,lesion_category[0],'positive_heatmap',original_image_filename+'.npy'))
             heatmap1 = resize_flip(image_filename,input_size,heatmap1)
             
@@ -193,6 +227,7 @@ class DatasetFolder(VisionDataset):
             heatmap4 = torch.stack([torch.from_numpy(heatmap4)],0)
             heatmap = torch.cat((heatmap1,heatmap2,heatmap3,heatmap4),0)
             print(heatmap.size())
+            print(heatmap.dtype)
             return heatmap
             
     def __getitem__(self, index):
