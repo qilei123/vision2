@@ -211,9 +211,10 @@ class DatasetFolder(VisionDataset):
         if not DEBUG:
             #sample_test = torch.cat((sample, sample), 0)
             #print(sample.size())
-            heatmap = self.get_heatmap(path,2000)
-            if not heatmap==None:
-                print(heatmap.size())
+            self.get_heatmap(path,2000)
+            #heatmap = self.get_heatmap(path,2000)
+            #if not heatmap==None:
+                #print(heatmap.size())
         return sample, target
 
     def __len__(self):
