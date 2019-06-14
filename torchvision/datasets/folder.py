@@ -107,6 +107,8 @@ class DatasetFolder(VisionDataset):
         self.samples = samples
         self.targets = [s[1] for s in samples]
 
+        print(self.root)
+
     def _find_classes(self, dir):
         """
         Finds the class folders in a dataset.
@@ -149,9 +151,9 @@ class DatasetFolder(VisionDataset):
             sample = self.transform(sample)
         if self.target_transform is not None:
             target = self.target_transform(target)
-        if not DEBUG:
+        if DEBUG:
             sample_test = torch.cat((sample, sample), 0)
-            print(sample_test.size())
+            print(sample.size())
         return sample, target
 
     def __len__(self):
