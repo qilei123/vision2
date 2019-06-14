@@ -151,10 +151,15 @@ class DatasetFolder(VisionDataset):
         lesion_category = ['Hemorrhages','Microaneurysms','Hard_Exudate','Cotton_Wool_Spot']
 
         image_filename = os.path.basename(image_path)
+        
+        original_image_filename = image_filename
 
-        original_image_filename = image_filename.replace('_vflip','')
-        original_image_filename = image_filename.replace('_hflip','')
-        original_image_filename = image_filename.replace('_vhflip','')
+        if '_vflip' in image_filename:
+            original_image_filename = image_filename.replace('_vflip','')
+        if '_hflip' in image_filename:
+            original_image_filename = image_filename.replace('_hflip','')
+        if '_vhflip' in image_filename:
+            original_image_filename = image_filename.replace('_vhflip','')
 
         if '/0/' in image_path:
 
