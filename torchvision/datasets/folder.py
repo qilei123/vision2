@@ -158,7 +158,7 @@ class DatasetFolder(VisionDataset):
         print(heatmap_json)
         heatmap = np.zeros((heatmap_json['image_shape'][0],heatmap_json['image_shape'][1]))
         bbox_count=0
-        if 'bboxes' in heatmap.keys():
+        if 'bboxes' in heatmap_json.keys():
             for bbox in heatmap_json['bboxes']:
                 
                 patch_heatmap = np.load(os.path.join(heatmap_path,original_image_filename+'_'+str(bbox_count)+'.npy'))
@@ -257,7 +257,7 @@ class DatasetFolder(VisionDataset):
         if not DEBUG:
             #sample_test = torch.cat((sample, sample), 0)
             #print(sample.size())
-            self.get_heatmap(path,2000)
+            heatmap = self.get_heatmap(path,2000)
             #heatmap = self.get_heatmap(path,2000)
             #if not heatmap==None:
                 #print(heatmap.size())
