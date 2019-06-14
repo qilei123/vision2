@@ -12,6 +12,8 @@ import numbers
 import collections
 import warnings
 
+DEBUG=True
+
 if sys.version_info < (3, 3):
     Sequence = collections.Sequence
     Iterable = collections.Iterable
@@ -202,7 +204,8 @@ def normalize(tensor, mean, std, inplace=False):
 
     if not inplace:
         tensor = tensor.clone()
-
+    if DEBUG:
+        print(tensor)
     mean = torch.as_tensor(mean, dtype=torch.float32, device=tensor.device)
     std = torch.as_tensor(std, dtype=torch.float32, device=tensor.device)
     tensor.sub_(mean[:, None, None]).div_(std[:, None, None])
