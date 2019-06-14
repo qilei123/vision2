@@ -12,7 +12,7 @@ import numbers
 import collections
 import warnings
 
-DEBUG=True
+DEBUG=False
 
 if sys.version_info < (3, 3):
     Sequence = collections.Sequence
