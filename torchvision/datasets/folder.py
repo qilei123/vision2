@@ -149,7 +149,7 @@ class DatasetFolder(VisionDataset):
         if self.target_transform is not None:
             target = self.target_transform(target)
         if not DEBUG:
-            print(sample)
+            print(sample.size)
         return sample, target
 
     def __len__(self):
