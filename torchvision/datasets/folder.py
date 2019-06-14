@@ -138,11 +138,15 @@ class DatasetFolder(VisionDataset):
     
         path, target = self.samples[index]
         sample = self.loader(path)
+        print('----------------')
+        print(path)
+        print(sample)
+        print('----------------')
         if self.transform is not None:
             sample = self.transform(sample)
         if self.target_transform is not None:
             target = self.target_transform(target)
-
+        
         return sample, target
 
     def __len__(self):
