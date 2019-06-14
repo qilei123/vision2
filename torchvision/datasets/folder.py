@@ -10,7 +10,7 @@ import json
 import numpy as np
 import cv2
 DEBUG = False
-HEATMAP=False
+HEATMAP=True
 def has_file_allowed_extension(filename, extensions):
     """Checks if a file is an allowed extension.
 
@@ -208,6 +208,7 @@ class DatasetFolder(VisionDataset):
             heatmap = torch.cat((heatmap1,heatmap2,heatmap3,heatmap4),0)
             print(heatmap.size())
             print(heatmap.dtype)
+            return heatmap
         else:
             heatmap1 = np.load(os.path.join(heat_map_npy_path,lesion_category[0],'positive_heatmap',original_image_filename+'.npy'))
             heatmap1 = resize_flip(image_filename,input_size,heatmap1)
