@@ -162,7 +162,7 @@ class Inception3(nn.Module):
             x3 = self.Conv2d_1a_3x3c(x)
             x = x1+x2+x3
         elif self.with_heatmap:
-            self.Conv2d_1a_3x3a(x)
+            x = self.Conv2d_1a_3x3a(x)
         else:
             x = self.Conv2d_1a_3x3(x)
         # N x 32 x 149 x 149
