@@ -155,7 +155,7 @@ class DatasetFolder(VisionDataset):
             heatmap_json = self.heatmap_0_Hard_Exudate_json[original_image_filename]
         elif category_id==4:
             heatmap_json = self.heatmap_0_Cotton_Wool_Spot_json[original_image_filename]
-        
+        print(heatmap_json)
         heatmap = np.zeros((heatmap_json['image_shape'][0],heatmap_json['image_shape'][1]))
         bbox_count=0
         for bbox in heatmap_json['bboxes']:
