@@ -6,6 +6,7 @@ import os
 import os.path
 import sys
 
+DEBUG = True
 
 def has_file_allowed_extension(filename, extensions):
     """Checks if a file is an allowed extension.
@@ -138,15 +139,17 @@ class DatasetFolder(VisionDataset):
     
         path, target = self.samples[index]
         sample = self.loader(path)
-        print('----------------')
-        print(path)
-        print(sample)
-        print('----------------')
+        if DEBUG:
+            print('----------------')
+            print(path)
+            print(sample)
+            print('----------------')
         if self.transform is not None:
             sample = self.transform(sample)
         if self.target_transform is not None:
             target = self.target_transform(target)
-        
+        if DEBUG:
+            print(sample)
         return sample, target
 
     def __len__(self):
