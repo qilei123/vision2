@@ -96,7 +96,7 @@ class Inception3(nn.Module):
         super(Inception3, self).__init__()
         self.aux_logits = aux_logits
         self.transform_input = transform_input
-        print(self.transform_input)
+        #print(self.transform_input)
         self.wider = wider
         self.wide2 = wide2
         self.wider2 = wider2
@@ -115,7 +115,7 @@ class Inception3(nn.Module):
         elif wide:
             self.Conv2d_1a_3x3 = BasicConv2d(3, 32, kernel_size=15, stride=5,padding = 7)
         elif with_heatmap:
-            self.Conv2d_1a_3x3a = BasicConv2d(7, 32, kernel_size=3, stride=2)
+            self.Conv2d_1a_3x3_with_heatmap = BasicConv2d(7, 32, kernel_size=3, stride=2)
         else:
             self.Conv2d_1a_3x3 = BasicConv2d(3, 32, kernel_size=3, stride=2)
         self.Conv2d_2a_3x3 = BasicConv2d(32, 32, kernel_size=3)
@@ -165,7 +165,7 @@ class Inception3(nn.Module):
             x3 = self.Conv2d_1a_3x3c(x)
             x = x1+x2+x3
         elif self.with_heatmap:
-            x = self.Conv2d_1a_3x3a(x)
+            x = self.Conv2d_1a_3x3_with_heatmap(x)
         else:
             x = self.Conv2d_1a_3x3(x)
         # N x 32 x 149 x 149
