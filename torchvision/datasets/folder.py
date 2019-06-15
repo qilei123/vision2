@@ -101,11 +101,13 @@ class DatasetFolder(VisionDataset):
         targets (list): The class_index value for each image in the dataset
     """
 
-    def __init__(self, root, loader, extensions=None, transform=None, target_transform=None, is_valid_file=None,input_size=2000):
+    def __init__(self, root, loader, extensions=None, transform=None, target_transform=None, is_valid_file=None,
+                        input_size=2000, with_heatmap = False):
         super(DatasetFolder, self).__init__(root)
         self.transform = transform
         self.target_transform = target_transform
         self.input_size=input_size
+        self.with_heatmap = with_heatmap
         classes, class_to_idx = self._find_classes(self.root)
         samples = make_dataset(self.root, class_to_idx, extensions, is_valid_file)
         
@@ -120,7 +122,7 @@ class DatasetFolder(VisionDataset):
         self.class_to_idx = class_to_idx
         self.samples = samples
         self.targets = [s[1] for s in samples]
-        if HEATMAP:
+        if self.with_heatmap:
             self.heatmap_0_Hemorrhages_json = json.load(open(os.path.join(self.root.replace('_aug','')+'_heatmap','0','Hemorrhages','positive_heatmap.json')))
             self.heatmap_0_Microaneurysms_json = json.load(open(os.path.join(self.root.replace('_aug','')+'_heatmap','0','Microaneurysms','positive_heatmap.json')))
             self.heatmap_0_Hard_Exudate_json = json.load(open(os.path.join(self.root.replace('_aug','')+'_heatmap','0','Hard_Exudate','positive_heatmap.json')))
@@ -259,7 +261,7 @@ class DatasetFolder(VisionDataset):
             #if not heatmap==None:
                 #print(heatmap.size())
             pass
-        if HEATMAP:
+        if self.with_heatmap:
             heatmap = self.get_heatmap(path,2000)
             heatmap = heatmap.type(sample.dtype)
             sample = torch.cat((sample,heatmap),0)
@@ -326,12 +328,13 @@ class ImageFolder(DatasetFolder):
     """
 
     def __init__(self, root, transform=None, target_transform=None,
-                 loader=default_loader, is_valid_file=None,input_size=2000):
+                 loader=default_loader, is_valid_file=None,input_size=2000,with_heatmap=False):
         super(ImageFolder, self).__init__(root, loader, IMG_EXTENSIONS if is_valid_file is None else None,
                                           transform=transform,
                                           target_transform=target_transform,
                                           is_valid_file=is_valid_file,
-                                          input_size=input_size)
+                                          input_size=input_size,
+                                          with_heatmap=with_heatmap)
         self.imgs = self.samples
     def get_imgs(self):
         return self.imgs
