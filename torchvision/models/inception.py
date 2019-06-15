@@ -164,7 +164,6 @@ class Inception3(nn.Module):
             x_ch4 = torch.unsqueeze(x[:, 4], 1) / 0.5 - 1
             x_ch5 = torch.unsqueeze(x[:, 5], 1) / 0.5 - 1
             x_ch6 = torch.unsqueeze(x[:, 6], 1) / 0.5 - 1
-          
             x = torch.cat((x_ch0, x_ch1, x_ch2,x_ch3,x_ch4,x_ch5,x_ch6), 1)            
         # N x 3 x 299 x 299
         if self.wider or self.bigger_wider:
