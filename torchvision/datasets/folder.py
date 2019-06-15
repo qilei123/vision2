@@ -260,6 +260,8 @@ class DatasetFolder(VisionDataset):
             #heatmap = self.get_heatmap(path,2000)
             #if not heatmap==None:
                 #print(heatmap.size())
+            print(path)
+            print(target)
             pass
         if self.with_heatmap:
             heatmap = self.get_heatmap(path,2000)
