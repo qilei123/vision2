@@ -101,10 +101,11 @@ class DatasetFolder(VisionDataset):
         targets (list): The class_index value for each image in the dataset
     """
 
-    def __init__(self, root, loader, extensions=None, transform=None, target_transform=None, is_valid_file=None):
+    def __init__(self, root, loader, extensions=None, transform=None, target_transform=None, is_valid_file=None,input_size=2000):
         super(DatasetFolder, self).__init__(root)
         self.transform = transform
         self.target_transform = target_transform
+        self.input_size=input_size
         classes, class_to_idx = self._find_classes(self.root)
         samples = make_dataset(self.root, class_to_idx, extensions, is_valid_file)
         
@@ -165,7 +166,7 @@ class DatasetFolder(VisionDataset):
                 heatmap[int(bbox[1]):int(bbox[1]+bbox[3]),int(bbox[0]):int(bbox[0]+bbox[2])] = patch_heatmap
                 bbox_count+=1
 
-        heatmap = resize_flip(image_filename,input_size,heatmap)
+        heatmap = resize_flip(image_filename,self.input_size,heatmap)
         return heatmap
 
     def get_heatmap(self,image_path,input_size):
@@ -211,16 +212,16 @@ class DatasetFolder(VisionDataset):
             return heatmap
         else:
             heatmap1 = np.load(os.path.join(heat_map_npy_path,lesion_category[0],'positive_heatmap',original_image_filename+'.npy'))
-            heatmap1 = resize_flip(image_filename,input_size,heatmap1)
+            heatmap1 = resize_flip(image_filename,self.input_size,heatmap1)
             
             heatmap2 = np.load(os.path.join(heat_map_npy_path,lesion_category[1],'positive_heatmap',original_image_filename+'.npy'))
-            heatmap2 = resize_flip(image_filename,input_size,heatmap2)
+            heatmap2 = resize_flip(image_filename,self.input_size,heatmap2)
             
             heatmap3 = np.load(os.path.join(heat_map_npy_path,lesion_category[2],'positive_heatmap',original_image_filename+'.npy'))
-            heatmap3 = resize_flip(image_filename,input_size,heatmap3)
+            heatmap3 = resize_flip(image_filename,self.input_size,heatmap3)
             
             heatmap4 = np.load(os.path.join(heat_map_npy_path,lesion_category[3],'positive_heatmap',original_image_filename+'.npy'))
-            heatmap4 = resize_flip(image_filename,input_size,heatmap4)
+            heatmap4 = resize_flip(image_filename,self.input_size,heatmap4)
             
             heatmap1 = torch.stack([torch.from_numpy(heatmap1)],0)
             heatmap2 = torch.stack([torch.from_numpy(heatmap2)],0)
@@ -325,11 +326,12 @@ class ImageFolder(DatasetFolder):
     """
 
     def __init__(self, root, transform=None, target_transform=None,
-                 loader=default_loader, is_valid_file=None):
+                 loader=default_loader, is_valid_file=None,input_size=2000):
         super(ImageFolder, self).__init__(root, loader, IMG_EXTENSIONS if is_valid_file is None else None,
                                           transform=transform,
                                           target_transform=target_transform,
-                                          is_valid_file=is_valid_file)
+                                          is_valid_file=is_valid_file,
+                                          input_size=input_size)
         self.imgs = self.samples
     def get_imgs(self):
         return self.imgs
