@@ -156,6 +156,16 @@ class Inception3(nn.Module):
             x_ch1 = torch.unsqueeze(x[:, 1], 1) * (0.224 / 0.5) + (0.456 - 0.5) / 0.5
             x_ch2 = torch.unsqueeze(x[:, 2], 1) * (0.225 / 0.5) + (0.406 - 0.5) / 0.5
             x = torch.cat((x_ch0, x_ch1, x_ch2), 1)
+        if self.with_heatmap:
+            x_ch0 = torch.unsqueeze(x[:, 0], 1) / 0.5 - 1
+            x_ch1 = torch.unsqueeze(x[:, 1], 1) / 0.5 - 1
+            x_ch2 = torch.unsqueeze(x[:, 2], 1) / 0.5 - 1
+            x_ch3 = torch.unsqueeze(x[:, 3], 1) / 0.5 - 1
+            x_ch4 = torch.unsqueeze(x[:, 4], 1) / 0.5 - 1
+            x_ch5 = torch.unsqueeze(x[:, 5], 1) / 0.5 - 1
+            x_ch6 = torch.unsqueeze(x[:, 6], 1) / 0.5 - 1
+          
+            x = torch.cat((x_ch0, x_ch1, x_ch2,x_ch3,x_ch4,x_ch5,x_ch6), 1)            
         # N x 3 x 299 x 299
         if self.wider or self.bigger_wider:
             x1 = self.Conv2d_1a_3x3a(x)
