@@ -96,6 +96,7 @@ class Inception3(nn.Module):
         super(Inception3, self).__init__()
         self.aux_logits = aux_logits
         self.transform_input = transform_input
+        print(self.transform_input)
         self.wider = wider
         self.wide2 = wide2
         self.wider2 = wider2
