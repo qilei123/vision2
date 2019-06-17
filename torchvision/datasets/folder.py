@@ -102,13 +102,14 @@ class DatasetFolder(VisionDataset):
     """
 
     def __init__(self, root, loader, extensions=None, transform=None, target_transform=None, is_valid_file=None,
-                        input_size=2000, with_heatmap = False,with_heatmap_v2=False):
+                        input_size=2000, with_heatmap = False,with_heatmap_v2=False,with_heatmap_v3 = False):
         super(DatasetFolder, self).__init__(root)
         self.transform = transform
         self.target_transform = target_transform
         self.input_size=input_size
         self.with_heatmap = with_heatmap
         self.with_heatmap_v2 = with_heatmap_v2
+        self.with_heatmap_v3 = with_heatmap_v3
         classes, class_to_idx = self._find_classes(self.root)
         samples = make_dataset(self.root, class_to_idx, extensions, is_valid_file)
         
@@ -270,8 +271,6 @@ class DatasetFolder(VisionDataset):
             #print(heatmap.size())
             #print(sample.size())
 
-            
-
             sample = torch.cat((sample,heatmap),0)
             #print(sample.size())
             #print(sample.size())
@@ -281,8 +280,14 @@ class DatasetFolder(VisionDataset):
             #print(heatmap.size())
             #print(sample.size())
             sample = sample+sample*heatmap[0]+sample*heatmap[1]+sample*heatmap[2]+sample*heatmap[3]
-            sample = sample/4
-
+            sample = sample/5
+        if self.with_heatmap_v3:
+            heatmap = self.get_heatmap(path,self.input_size)
+            heatmap = heatmap.type(sample.dtype)
+            #print(heatmap.size())
+            #print(sample.size())
+            sample = sample[:]+heatmap[0]+heatmap[1]+heatmap[2]+heatmap[3]
+            sample = sample/5
             #sample = torch.cat((sample,heatmap),0)            
         return sample, target
 
