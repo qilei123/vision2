@@ -264,7 +264,7 @@ class DatasetFolder(VisionDataset):
             print(target)
             pass
         if self.with_heatmap:
-            heatmap = self.get_heatmap(path,self.input_size)
+            heatmap = self.get_heatmap(path,2000)
             heatmap = heatmap.type(sample.dtype)
             sample = torch.cat((sample,heatmap),0)
             #print(sample.size())
