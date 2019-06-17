@@ -160,7 +160,6 @@ class Inception3(nn.Module):
         '''
         if self.with_heatmap:
             x_ch0 = torch.unsqueeze(x[:, 0], 1) / 0.5 - 1
-            print(x_ch0.size())
             x_ch1 = torch.unsqueeze(x[:, 1], 1) / 0.5 - 1
             x_ch2 = torch.unsqueeze(x[:, 2], 1) / 0.5 - 1
             x_ch3 = torch.unsqueeze(x[:, 3], 1) / 0.5 - 1
