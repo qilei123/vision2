@@ -171,7 +171,7 @@ class Inception3(nn.Module):
             x = torch.cat((x_ch0, x_ch1, x_ch2,x_ch3,x_ch4,x_ch5,x_ch6), 1) 
         elif self.with_heatmap_v2:
 
-            x = torch.unsqueeze((x[:,0:4]+x[:,0:4]*x[:,4]+x[:,0:4]*x[:,5]+x[:,0:4]*x[:,6]),1)/4
+            x = x[:,0:4]+x[:,0:4]*x[:,4]+x[:,0:4]*x[:,5]+x[:,0:4]*x[:,6]
             x_ch0 = torch.unsqueeze(x[:, 0], 1) / 0.5 - 1
             x_ch1 = torch.unsqueeze(x[:, 1], 1) / 0.5 - 1
             x_ch2 = torch.unsqueeze(x[:, 2], 1) / 0.5 - 1
