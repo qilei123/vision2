@@ -284,7 +284,7 @@ class DatasetFolder(VisionDataset):
             sample = sample/4
             print(sample.size())
             cv2.imwrite('test.jpg',np.uint8(sample.numpy()*255))
-            #cv2.waitKey(0)
+            cv2.waitKey(0)
             #sample = torch.cat((sample,heatmap),0)            
         return sample, target
 
