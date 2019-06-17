@@ -123,7 +123,7 @@ class DatasetFolder(VisionDataset):
         self.class_to_idx = class_to_idx
         self.samples = samples
         self.targets = [s[1] for s in samples]
-        if self.with_heatmap:
+        if self.with_heatmap or self.with_heatmap_v2:
             self.heatmap_0_Hemorrhages_json = json.load(open(os.path.join(self.root.replace('_aug','')+'_heatmap','0','Hemorrhages','positive_heatmap.json')))
             self.heatmap_0_Microaneurysms_json = json.load(open(os.path.join(self.root.replace('_aug','')+'_heatmap','0','Microaneurysms','positive_heatmap.json')))
             self.heatmap_0_Hard_Exudate_json = json.load(open(os.path.join(self.root.replace('_aug','')+'_heatmap','0','Hard_Exudate','positive_heatmap.json')))
