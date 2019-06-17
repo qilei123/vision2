@@ -282,7 +282,7 @@ class DatasetFolder(VisionDataset):
             #print(sample.size())
             sample = sample+sample*heatmap[0]+sample*heatmap[1]+sample*heatmap[2]+sample*heatmap[3]
             sample = sample/4
-            cv2.show('test',np.uint8(sample.cpu().detach().numpy()))
+            cv2.imshow('test',np.uint8(sample.cpu().detach().numpy()))
             cv2.waitKey(0)
             #sample = torch.cat((sample,heatmap),0)            
         return sample, target
