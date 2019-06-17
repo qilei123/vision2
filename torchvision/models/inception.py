@@ -92,7 +92,7 @@ def inception_v3_wide(pretrained=False, progress=True, **kwargs):
 class Inception3(nn.Module):
 
     def __init__(self, num_classes=1000, aux_logits=True, transform_input=False,
-                            wide = False,wider = False,wide2=False,wider2=False,bigger_wider = False,with_heatmap=False):
+                            wide = False,wider = False,wide2=False,wider2=False,bigger_wider = False,with_heatmap=False,with_heatmap_v2=False):
         super(Inception3, self).__init__()
         self.aux_logits = aux_logits
         self.transform_input = transform_input
@@ -102,6 +102,7 @@ class Inception3(nn.Module):
         self.wider2 = wider2
         self.bigger_wider = bigger_wider
         self.with_heatmap = with_heatmap
+        self.with_heatmap_v2 = with_heatmap_v2
         if bigger_wider:
             self.Conv2d_1a_3x3a = BasicConv2d(3, 32, kernel_size=21, stride=10,padding = 10)
             self.Conv2d_1a_3x3b = BasicConv2d(3, 32, kernel_size=41, stride=10,padding = 20)
@@ -168,6 +169,13 @@ class Inception3(nn.Module):
             x_ch5 = torch.unsqueeze(x[:, 5], 1) / 0.5 - 1
             x_ch6 = torch.unsqueeze(x[:, 6], 1) / 0.5 - 1
             x = torch.cat((x_ch0, x_ch1, x_ch2,x_ch3,x_ch4,x_ch5,x_ch6), 1) 
+        elif self.with_heatmap_v2:
+
+            x = x[:,0:4](1+x[:,4]+x[:,5]+x[:,6])/4
+            x_ch0 = torch.unsqueeze(x[:, 0], 1) / 0.5 - 1
+            x_ch1 = torch.unsqueeze(x[:, 1], 1) / 0.5 - 1
+            x_ch2 = torch.unsqueeze(x[:, 2], 1) / 0.5 - 1
+            x = torch.cat((x_ch0, x_ch1, x_ch2), 1)   
         else:
             x_ch0 = torch.unsqueeze(x[:, 0], 1) / 0.5 - 1
             x_ch1 = torch.unsqueeze(x[:, 1], 1) / 0.5 - 1
