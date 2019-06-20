@@ -1,6 +1,7 @@
 import torch.nn as nn
 import torch.utils.model_zoo as model_zoo
 import torch
+import torch.nn.functional as F
 __all__ = ['InceptionV4', 'inceptionv4']
 
 model_urls = {
@@ -251,12 +252,18 @@ class InceptionV4(nn.Module):
             nn.AvgPool2d(8, count_include_pad=False)
         )
         self.classif = nn.Linear(1536, num_classes)
-
+    def logits(self, features):
+        #Allows image of any size to be processed
+        adaptiveAvgPoolWidth = features.shape[2]
+        x = F.avg_pool2d(features, kernel_size=adaptiveAvgPoolWidth)
+        x = x.view(x.size(0), -1)
+        x = self.last_linear(x)
+        return x
     def forward(self, x):
         x = self.features(x)
-        x = x.view(x.size(0), -1)
-        print(x.size())
-        x = self.classif(x) 
+        #x = x.view(x.size(0), -1)
+        #print(x.size())
+        x = self.logits(x) 
         return x
 
 
