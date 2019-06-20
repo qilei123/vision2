@@ -264,7 +264,9 @@ class InceptionV4(nn.Module):
         x = self.features(x)
         #x = x.view(x.size(0), -1)
         #print(x.size())
-        x = self.logits(x) 
+        x = F.adaptive_avg_pool2d(x, (1, 1))
+        x = x.view(x.size(0), -1)
+        x = self.classif(x) 
         return x
 
 
