@@ -259,13 +259,13 @@ class InceptionV4(nn.Module):
         return x
 
 
-def inceptionv4(pretrained=False):
+def inceptionv4(num_classes = 1000,pretrained=False):
     r"""InceptionV4 model architecture from the
     `"Inception-v4, Inception-ResNet..." <https://arxiv.org/abs/1602.07261>`_ paper.
     Args:
         pretrained (bool): If True, returns a model pre-trained on ImageNet
     """
-    model = InceptionV4()
+    model = InceptionV4(num_classes = num_classes)
     if pretrained:
         model.load_state_dict(model_zoo.load_url(model_urls['inceptionv4']))
     return model
