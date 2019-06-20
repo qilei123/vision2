@@ -280,7 +280,7 @@ def inceptionv4(num_classes = 1001,pretrained=False):
         state_dict = load_state_dict_from_url(model_urls['inceptionv4'],
                                               progress=True)
         model_dict=model.state_dict()
-        pretrained_dict = {k: v for k, v in state_dict.items() if not('Conv2d_1a_3x3' in k)}
+        pretrained_dict = {k: v for k, v in state_dict.items() if not('classif' in k)}
         model_dict.update(pretrained_dict)
         model.load_state_dict(model_dict)
     return model
