@@ -255,11 +255,12 @@ class InceptionV4(nn.Module):
     def forward(self, x):
         x = self.features(x)
         x = x.view(x.size(0), -1)
+        print(x.size())
         x = self.classif(x) 
         return x
 
 
-def inceptionv4(num_classes = 1000,pretrained=False):
+def inceptionv4(num_classes = 1001,pretrained=False):
     r"""InceptionV4 model architecture from the
     `"Inception-v4, Inception-ResNet..." <https://arxiv.org/abs/1602.07261>`_ paper.
     Args:
