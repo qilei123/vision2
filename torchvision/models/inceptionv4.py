@@ -2,6 +2,7 @@ import torch.nn as nn
 import torch.utils.model_zoo as model_zoo
 import torch
 import torch.nn.functional as F
+from .utils import load_state_dict_from_url
 __all__ = ['InceptionV4', 'inceptionv4']
 
 model_urls = {
@@ -275,5 +276,11 @@ def inceptionv4(num_classes = 1001,pretrained=False):
     """
     model = InceptionV4(num_classes = num_classes)
     if pretrained:
-        model.load_state_dict(model_zoo.load_url(model_urls['inceptionv4']))
+        #model.load_state_dict(model_zoo.load_url(model_urls['inceptionv4']))
+        state_dict = load_state_dict_from_url(model_urls['inceptionv4'],
+                                              progress=True)
+        model_dict=model.state_dict()
+        pretrained_dict = {k: v for k, v in state_dict.items() if not('Conv2d_1a_3x3' in k)}
+        model_dict.update(pretrained_dict)
+        model.load_state_dict(model_dict)
     return model
