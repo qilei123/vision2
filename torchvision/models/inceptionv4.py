@@ -256,6 +256,7 @@ class InceptionV4(nn.Module):
     def logits(self, features):
         #Allows image of any size to be processed
         adaptiveAvgPoolWidth = features.shape[2]
+        print(features.shape)
         x = F.avg_pool2d(features, kernel_size=adaptiveAvgPoolWidth)
         x = x.view(x.size(0), -1)
         x = self.classif(x)
@@ -276,11 +277,13 @@ def inceptionv4(num_classes = 1001,pretrained=False):
     """
     model = InceptionV4(num_classes = num_classes)
     if pretrained:
-        #model.load_state_dict(model_zoo.load_url(model_urls['inceptionv4']))
-        state_dict = load_state_dict_from_url(model_urls['inceptionv4'],
-                                              progress=True)
-        model_dict=model.state_dict()
-        pretrained_dict = {k: v for k, v in state_dict.items() if not('classif' in k)}
-        model_dict.update(pretrained_dict)
-        model.load_state_dict(model_dict)
+        if num_classes==1001:
+            model.load_state_dict(model_zoo.load_url(model_urls['inceptionv4']))
+        else:
+            state_dict = load_state_dict_from_url(model_urls['inceptionv4'],
+                                                progress=True)
+            model_dict=model.state_dict()
+            pretrained_dict = {k: v for k, v in state_dict.items() if not('classif' in k)}
+            model_dict.update(pretrained_dict)
+            model.load_state_dict(model_dict)
     return model
