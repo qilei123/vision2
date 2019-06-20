@@ -257,7 +257,7 @@ class InceptionV4(nn.Module):
         adaptiveAvgPoolWidth = features.shape[2]
         x = F.avg_pool2d(features, kernel_size=adaptiveAvgPoolWidth)
         x = x.view(x.size(0), -1)
-        x = self.last_linear(x)
+        x = self.classif(x)
         return x
     def forward(self, x):
         x = self.features(x)
