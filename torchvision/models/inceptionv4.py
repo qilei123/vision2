@@ -255,7 +255,7 @@ class InceptionV4(nn.Module):
 
     def __init__(self, num_classes=1001,aux_logits=True):
         super(InceptionV4, self).__init__()
-        self.features1 = nn.Sequential(
+        self.features = nn.Sequential(
             BasicConv2d(3, 32, kernel_size=3, stride=2),
             BasicConv2d(32, 32, kernel_size=3, stride=1),
             BasicConv2d(32, 64, kernel_size=3, stride=1, padding=1),
@@ -275,15 +275,13 @@ class InceptionV4(nn.Module):
             Inception_B(),
             Inception_B(),
             Reduction_B(), # Mixed_7a
-            )
-        if aux_logits:
-            self.AuxLogits = InceptionAux(1536, num_classes)
-        self.features2 = nn.Sequential(
             Inception_C(),
             Inception_C(),
             Inception_C(),
             nn.AvgPool2d(8, count_include_pad=False)
         )
+        if aux_logits:
+            self.AuxLogits = InceptionAux(1536, num_classes)
         self.classif = nn.Linear(1536, num_classes)
     def logits(self, features):
         #Allows image of any size to be processed
@@ -293,12 +291,12 @@ class InceptionV4(nn.Module):
         x = self.classif(x)
         return x
     def forward(self, x):
-        x = self.features1(x)
+        x = self.features[0:19](x)
         #x = x.view(x.size(0), -1)
         #print(x.size())
         if self.training and self.aux_logits:
             aux = self.AuxLogits(x)
-        x = self.features2(x)
+        x = self.features[19:](x)
         x = F.adaptive_avg_pool2d(x, (1, 1))
         x = x.view(x.size(0), -1)
         x = self.classif(x) 
