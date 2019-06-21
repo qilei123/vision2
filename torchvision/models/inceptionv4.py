@@ -3,12 +3,13 @@ import torch.utils.model_zoo as model_zoo
 import torch
 import torch.nn.functional as F
 from .utils import load_state_dict_from_url
+from collections import namedtuple
 __all__ = ['InceptionV4', 'inceptionv4']
 
 model_urls = {
     'inceptionv4': 'https://s3.amazonaws.com/pytorch/models/inceptionv4-58153ba9.pth'
 }
-
+_InceptionOuputs = namedtuple('InceptionOuputs', ['logits', 'aux_logits'])
 class BasicConv2d(nn.Module):
 
     def __init__(self, in_planes, out_planes, kernel_size, stride, padding=0):
@@ -223,11 +224,38 @@ class Inception_C(nn.Module):
         out = torch.cat((x0, x1, x2, x3), 1)
         return out
 
+class InceptionAux(nn.Module):
+
+    def __init__(self, in_channels, num_classes):
+        super(InceptionAux, self).__init__()
+        self.conv0 = BasicConv2d(in_channels, 128, kernel_size=1)
+        self.conv1 = BasicConv2d(128, 768, kernel_size=5)
+        self.conv1.stddev = 0.01
+        self.fc = nn.Linear(768, num_classes)
+        self.fc.stddev = 0.001
+
+    def forward(self, x):
+        # N x 768 x 17 x 17
+        x = F.avg_pool2d(x, kernel_size=5, stride=3)
+        # N x 768 x 5 x 5
+        x = self.conv0(x)
+        # N x 128 x 5 x 5
+        x = self.conv1(x)
+        # N x 768 x 1 x 1
+        # Adaptive average pooling
+        x = F.adaptive_avg_pool2d(x, (1, 1))
+        # N x 768 x 1 x 1
+        x = x.view(x.size(0), -1)
+        # N x 768
+        x = self.fc(x)
+        # N x 1000
+        return x
+
 class InceptionV4(nn.Module):
 
-    def __init__(self, num_classes=1001):
+    def __init__(self, num_classes=1001,aux_logits=True):
         super(InceptionV4, self).__init__()
-        self.features = nn.Sequential(
+        self.features1 = nn.Sequential(
             BasicConv2d(3, 32, kernel_size=3, stride=2),
             BasicConv2d(32, 32, kernel_size=3, stride=1),
             BasicConv2d(32, 64, kernel_size=3, stride=1, padding=1),
@@ -247,6 +275,10 @@ class InceptionV4(nn.Module):
             Inception_B(),
             Inception_B(),
             Reduction_B(), # Mixed_7a
+            )
+        if aux_logits:
+            self.AuxLogits = InceptionAux(1536, num_classes)
+        self.features2 = nn.Sequential(
             Inception_C(),
             Inception_C(),
             Inception_C(),
@@ -261,12 +293,17 @@ class InceptionV4(nn.Module):
         x = self.classif(x)
         return x
     def forward(self, x):
-        x = self.features(x)
+        x = self.features1(x)
         #x = x.view(x.size(0), -1)
         #print(x.size())
+        if self.training and self.aux_logits:
+            aux = self.AuxLogits(x)
+        x = self.features2(x)
         x = F.adaptive_avg_pool2d(x, (1, 1))
         x = x.view(x.size(0), -1)
         x = self.classif(x) 
+        if self.training and self.aux_logits:
+            return _InceptionOuputs(x, aux)
         return x
 
 
@@ -288,3 +325,4 @@ def inceptionv4(num_classes = 1001,pretrained=False):
             model_dict.update(pretrained_dict)
             model.load_state_dict(model_dict)
     return model
+
