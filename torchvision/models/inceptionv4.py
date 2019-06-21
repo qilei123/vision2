@@ -255,6 +255,7 @@ class InceptionV4(nn.Module):
 
     def __init__(self, num_classes=1001,aux_logits=True):
         super(InceptionV4, self).__init__()
+        self.aux_logits = aux_logits
         self.features = nn.Sequential(
             BasicConv2d(3, 32, kernel_size=3, stride=2),
             BasicConv2d(32, 32, kernel_size=3, stride=1),
