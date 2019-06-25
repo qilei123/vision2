@@ -243,7 +243,7 @@ class Inception3(nn.Module):
         # Adaptive average pooling
         if self.with_deephead_v1 or self.with_deephead_v2:
             x=self.deephead(x)
-            print(x.shape)
+            #print(x.shape)
         else:
             #print(x.shape)
             x = F.adaptive_avg_pool2d(x, (1, 1))
