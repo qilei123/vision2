@@ -92,8 +92,9 @@ def inception_v3_wide(pretrained=False, progress=True, **kwargs):
 class Inception3(nn.Module):
 
     def __init__(self, num_classes=1000, aux_logits=True, transform_input=False,
-                            wide = False,wider = False,wide2=False,wider2=False,bigger_wider = False,with_heatmap=False,with_heatmap_v2=False):
+                            wide = False,wider = False,wide2=False,wider2=False,bigger_wider = False,with_heatmap=False,with_heatmap_v2=False,with_deephead_v1=False):
         super(Inception3, self).__init__()
+        self.with_deephead_v1 = with_deephead_v1
         self.aux_logits = aux_logits
         self.transform_input = transform_input
         #print(self.transform_input)
@@ -136,6 +137,10 @@ class Inception3(nn.Module):
         self.Mixed_7a = InceptionD(768)
         self.Mixed_7b = InceptionE(1280)
         self.Mixed_7c = InceptionE(2048)
+        
+        if self.with_deephead_v1:
+            pass
+
         self.fc = nn.Linear(2048, num_classes)
 
         for m in self.modules():
@@ -474,3 +479,22 @@ class BasicConv2d_wider2(nn.Module):
         x = x1+x2+x3
         x = self.bn(x)
         return F.relu(x, inplace=True)
+
+class Deephead_v1(nn.Module):
+
+    def __init__(self, in_channels, **kwargs):
+        super(Deephead_v1, self).__init__()
+        self.conv1 = BasicConv2d(in_channels,in_channels,kernel_size=3, stride=2,padding=1,bias=False)
+        #8x8
+        self.conv2 = BasicConv2d(in_channels,in_channels,kernel_size=3, stride=2,padding=1,bias=False)
+        #4x4
+        self.conv3 = BasicConv2d(in_channels,in_channels,kernel_size=3, stride=2,padding=1,bias=False)
+        #2x2
+        self.conv4 = BasicConv2d(in_channels,in_channels,kernel_size=3, stride=2,padding=1,bias=False)
+
+    def forward(self, x):
+        x = self.conv1(x)
+        x = self.conv2(x)
+        x = self.conv3(x)
+        x = self.conv4(x)
+        return x
