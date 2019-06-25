@@ -424,6 +424,7 @@ class InceptionAux(nn.Module):
         x = self.conv1(x)
         # N x 768 x 1 x 1
         # Adaptive average pooling
+        print(x.size())
         x = F.adaptive_avg_pool2d(x, (1, 1))
         # N x 768 x 1 x 1
         x = x.view(x.size(0), -1)
