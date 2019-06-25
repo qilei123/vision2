@@ -24,7 +24,7 @@ else:
     Iterable = collections.abc.Iterable
 
 
-__all__ = ["Compose", "ToTensor", "ToPILImage", "Normalize", "Resize", "Scale", "CenterCrop", "Pad",
+__all__ = ["Compose", "ToTensor", "ToPILImage", "Normalize", "Resize","Resize2", "Scale", "CenterCrop", "Pad",
            "Lambda", "RandomApply", "RandomChoice", "RandomOrder", "RandomCrop", "RandomHorizontalFlip",
            "RandomVerticalFlip", "RandomResizedCrop", "RandomSizedCrop", "FiveCrop", "TenCrop", "LinearTransformation",
            "ColorJitter", "RandomRotation", "RandomAffine", "Grayscale", "RandomGrayscale",
@@ -199,6 +199,37 @@ class Resize(object):
         interpolate_str = _pil_interpolation_to_str[self.interpolation]
         return self.__class__.__name__ + '(size={0}, interpolation={1})'.format(self.size, interpolate_str)
 
+class Resize2(object):
+    """Resize the input PIL Image to the given size.
+
+    Args:
+        size (sequence or int): Desired output size. If size is a sequence like
+            (h, w), output size will be matched to this. If size is an int,
+            smaller edge of the image will be matched to this number.
+            i.e, if height > width, then image will be rescaled to
+            (size * height / width, size)
+        interpolation (int, optional): Desired interpolation. Default is
+            ``PIL.Image.BILINEAR``
+    """
+
+    def __init__(self, size, interpolation=Image.BILINEAR):
+        assert isinstance(size, int) or (isinstance(size, Iterable) and len(size) == 2)
+        self.size = size
+        self.interpolation = interpolation
+
+    def __call__(self, img):
+        """
+        Args:
+            img (PIL Image): Image to be scaled.
+
+        Returns:
+            PIL Image: Rescaled image.
+        """
+        return F.resize2(img, self.size, self.interpolation)
+
+    def __repr__(self):
+        interpolate_str = _pil_interpolation_to_str[self.interpolation]
+        return self.__class__.__name__ + '(size={0}, interpolation={1})'.format(self.size, interpolate_str)
 
 class Scale(Resize):
     """

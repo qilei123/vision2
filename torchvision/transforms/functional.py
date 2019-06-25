@@ -211,7 +211,29 @@ def normalize(tensor, mean, std, inplace=False):
     tensor.sub_(mean[:, None, None]).div_(std[:, None, None])
     return tensor
 
+def resize2(img,size, interpolation=Image.BILINEAR):
+    if not _is_pil_image(img):
+        raise TypeError('img should be PIL Image. Got {}'.format(type(img)))
+    if not (isinstance(size, int) or (isinstance(size, Iterable) and len(size) == 2)):
+        raise TypeError('Got inappropriate size arg: {}'.format(size))
 
+    if isinstance(size, int):
+        w, h = img.size
+        return img.resize((size, size), interpolation)
+        '''
+        if (w <= h and w == size) or (h <= w and h == size):
+            return img
+        if w < h:
+            ow = size
+            oh = int(size * h / w)
+            return img.resize((ow, oh), interpolation)
+        else:
+            oh = size
+            ow = int(size * w / h)
+            return img.resize((ow, oh), interpolation)
+        '''
+    else:
+        return img.resize(size[::-1], interpolation)    
 def resize(img, size, interpolation=Image.BILINEAR):
     r"""Resize the input PIL Image to the given size.
 
