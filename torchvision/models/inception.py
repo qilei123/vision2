@@ -496,11 +496,13 @@ class Deephead_v1(nn.Module):
         #4x4
         self.conv3 = BasicConv2d(in_channels,in_channels,kernel_size=3, stride=2,padding=1)
         #2x2
-        #self.conv4 = BasicConv2d(in_channels,in_channels,kernel_size=3, stride=2,padding=1)
+        self.conv4 = BasicConv2d(in_channels,in_channels,kernel_size=3, stride=2,padding=1)
+        self.conv5 = BasicConv2d(in_channels,in_channels,kernel_size=3, stride=2,padding=1)
 
     def forward(self, x):
         x = self.conv1(x)
         x = self.conv2(x)
         x = self.conv3(x)
-        #x = self.conv4(x)
+        x = self.conv4(x)
+        x = self.conv5(x)
         return x
