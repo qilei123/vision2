@@ -241,11 +241,11 @@ class Inception3(nn.Module):
         if self.with_deephead_v1:
             x=self.deephead_v1(x)
             print(x.shape)
-        
-        x = F.adaptive_avg_pool2d(x, (1, 1))
-        # N x 2048 x 1 x 1
-        x = F.dropout(x, training=self.training)
-        # N x 2048 x 1 x 1
+        else:
+            x = F.adaptive_avg_pool2d(x, (1, 1))
+            # N x 2048 x 1 x 1
+            x = F.dropout(x, training=self.training)
+            # N x 2048 x 1 x 1
         x = x.view(x.size(0), -1)
         # N x 2048
         x = self.fc(x)
