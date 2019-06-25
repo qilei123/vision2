@@ -486,13 +486,13 @@ class Deephead_v1(nn.Module):
 
     def __init__(self, in_channels, **kwargs):
         super(Deephead_v1, self).__init__()
-        self.conv1 = BasicConv2d(in_channels,in_channels,bias=False,kernel_size=3, stride=2,padding=1)
+        self.conv1 = BasicConv2d(in_channels,in_channels,kernel_size=3, stride=2,padding=1)
         #8x8
-        self.conv2 = BasicConv2d(in_channels,in_channels,bias=False,kernel_size=3, stride=2,padding=1)
+        self.conv2 = BasicConv2d(in_channels,in_channels,kernel_size=3, stride=2,padding=1)
         #4x4
-        self.conv3 = BasicConv2d(in_channels,in_channels,bias=False,kernel_size=3, stride=2,padding=1)
+        self.conv3 = BasicConv2d(in_channels,in_channels,kernel_size=3, stride=2,padding=1)
         #2x2
-        self.conv4 = BasicConv2d(in_channels,in_channels,bias=False,kernel_size=3, stride=2,padding=1)
+        self.conv4 = BasicConv2d(in_channels,in_channels,kernel_size=3, stride=2,padding=1)
 
     def forward(self, x):
         x = self.conv1(x)
