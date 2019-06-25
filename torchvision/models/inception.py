@@ -240,6 +240,7 @@ class Inception3(nn.Module):
         # Adaptive average pooling
         if self.with_deephead_v1:
             x=self.deephead_v1(x)
+            print(x.shape)
         else:
             x = F.adaptive_avg_pool2d(x, (1, 1))
             # N x 2048 x 1 x 1
