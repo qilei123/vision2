@@ -43,7 +43,10 @@ def inception_v3(pretrained=False, progress=True, **kwargs):
         model = Inception3(**kwargs)
         state_dict = load_state_dict_from_url(model_urls['inception_v3_google'],
                                               progress=progress)
-        model.load_state_dict(state_dict)
+        model_dict=model.state_dict()
+        pretrained_dict = {k: v for k, v in state_dict.items() if not('Conv2d_1a_3x3' in k or 'deephead' in k)}
+        model_dict.update(pretrained_dict)
+        model.load_state_dict(model_dict)
         if not original_aux_logits:
             model.aux_logits = False
             del model.AuxLogits
