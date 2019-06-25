@@ -139,7 +139,7 @@ class Inception3(nn.Module):
         self.Mixed_7c = InceptionE(2048)
         
         if self.with_deephead_v1:
-            pass
+            self.deephead_v1 = Deephead_v1(2048)
 
         self.fc = nn.Linear(2048, num_classes)
 
@@ -235,10 +235,12 @@ class Inception3(nn.Module):
         x = self.Mixed_7c(x)
         # N x 2048 x 8 x 8
         # Adaptive average pooling
-        print(x.shape)
-        x = F.adaptive_avg_pool2d(x, (1, 1))
-        # N x 2048 x 1 x 1
-        x = F.dropout(x, training=self.training)
+        if self.with_deephead_v1:
+            x=self.deephead_v1(x)
+        else:
+            x = F.adaptive_avg_pool2d(x, (1, 1))
+            # N x 2048 x 1 x 1
+            x = F.dropout(x, training=self.training)
         # N x 2048 x 1 x 1
         x = x.view(x.size(0), -1)
         # N x 2048
