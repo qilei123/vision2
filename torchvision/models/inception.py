@@ -95,9 +95,11 @@ def inception_v3_wide(pretrained=False, progress=True, **kwargs):
 class Inception3(nn.Module):
 
     def __init__(self, num_classes=1000, aux_logits=True, transform_input=False,
-                            wide = False,wider = False,wide2=False,wider2=False,bigger_wider = False,with_heatmap=False,with_heatmap_v2=False,with_deephead_v1=False):
+                            wide = False,wider = False,wide2=False,wider2=False,bigger_wider = False,
+                            with_heatmap=False,with_heatmap_v2=False,with_deephead_v1=False,with_deephead_v2=False):
         super(Inception3, self).__init__()
         self.with_deephead_v1 = with_deephead_v1
+        self.with_deephead_v2 = with_deephead_v2
         self.aux_logits = aux_logits
         self.transform_input = transform_input
         #print(self.transform_input)
@@ -142,8 +144,9 @@ class Inception3(nn.Module):
         self.Mixed_7c = InceptionE(2048)
         
         if self.with_deephead_v1:
-            self.deephead_v1 = Deephead_v1(2048)
-
+            self.deephead = Deephead_v1(2048)
+        if self.with_deephead_v2:
+            self.deephead = Deephead_v2(2048)
         self.fc = nn.Linear(2048, num_classes)
 
         for m in self.modules():
@@ -238,8 +241,8 @@ class Inception3(nn.Module):
         x = self.Mixed_7c(x)
         # N x 2048 x 8 x 8
         # Adaptive average pooling
-        if self.with_deephead_v1:
-            x=self.deephead_v1(x)
+        if self.with_deephead_v1 or self.with_deephead_v2:
+            x=self.deephead(x)
             print(x.shape)
         else:
             #print(x.shape)
@@ -520,6 +523,7 @@ class Deephead_v2(nn.Module):
         #2x2
         self.conv4 = BasicConv2d(in_channels,in_channels,kernel_size=3, stride=2,padding=1)
         self.conv5 = BasicConv2d(in_channels,in_channels,kernel_size=3, stride=2,padding=1)
+        self.conv6 = BasicConv2d(in_channels,in_channels,kernel_size=3, stride=2,padding=1)
 
     def forward(self, x):
         x = self.conv1(x)
@@ -527,4 +531,5 @@ class Deephead_v2(nn.Module):
         x = self.conv3(x)
         x = self.conv4(x)
         x = self.conv5(x)
+        x = self.conv6(x)
         return x
