@@ -230,6 +230,7 @@ class Inception3(nn.Module):
         x = self.Mixed_7c(x)
         # N x 2048 x 8 x 8
         # Adaptive average pooling
+        print(x.shape)
         x = F.adaptive_avg_pool2d(x, (1, 1))
         # N x 2048 x 1 x 1
         x = F.dropout(x, training=self.training)
@@ -418,14 +419,13 @@ class InceptionAux(nn.Module):
     def forward(self, x):
         # N x 768 x 17 x 17
         x = F.avg_pool2d(x, kernel_size=5, stride=3)
-        print(x.shape)
+        
         # N x 768 x 5 x 5
         x = self.conv0(x)
         # N x 128 x 5 x 5
         x = self.conv1(x)
         # N x 768 x 1 x 1
         # Adaptive average pooling
-        print(x.shape)
         x = F.adaptive_avg_pool2d(x, (1, 1))
         # N x 768 x 1 x 1
         x = x.view(x.size(0), -1)
