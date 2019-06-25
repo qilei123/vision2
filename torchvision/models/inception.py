@@ -418,6 +418,7 @@ class InceptionAux(nn.Module):
     def forward(self, x):
         # N x 768 x 17 x 17
         x = F.avg_pool2d(x, kernel_size=5, stride=3)
+        print(x.shape)
         # N x 768 x 5 x 5
         x = self.conv0(x)
         # N x 128 x 5 x 5
