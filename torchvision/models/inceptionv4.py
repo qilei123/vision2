@@ -292,12 +292,12 @@ class InceptionV4(nn.Module):
         x = self.classif(x)
         return x
     def forward(self, x):
-        x = self.features[0:19](x)
+        x = self.features[0:18](x)
         #x = x.view(x.size(0), -1)
         #print(x.size())
         if self.training and self.aux_logits:
             aux = self.AuxLogits(x)
-        x = self.features[19:](x)
+        x = self.features[18:](x)
         x = F.adaptive_avg_pool2d(x, (1, 1))
         x = x.view(x.size(0), -1)
         x = self.classif(x) 
