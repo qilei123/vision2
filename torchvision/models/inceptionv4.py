@@ -282,7 +282,7 @@ class InceptionV4(nn.Module):
             nn.AvgPool2d(8, count_include_pad=False)
         )
         if aux_logits:
-            self.AuxLogits = InceptionAux(1536, num_classes)
+            self.AuxLogits = InceptionAux(1024, num_classes)
         self.classif = nn.Linear(1536, num_classes)
     def logits(self, features):
         #Allows image of any size to be processed
