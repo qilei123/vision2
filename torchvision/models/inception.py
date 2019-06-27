@@ -206,7 +206,7 @@ class Inception3(nn.Module):
             x2 = self.Conv2d_1a_3x3b(x)
             x3 = self.Conv2d_1a_3x3c(x)
             x = x1+x2+x3
-        elif self.with_heatmap or self.with_deephead_v2:
+        elif self.with_heatmap or self.with_heatmap_v2:
             x = self.Conv2d_1a_3x3_with_heatmap(x)
         else:
             x = self.Conv2d_1a_3x3(x)
