@@ -126,10 +126,15 @@ class DatasetFolder(VisionDataset):
         self.samples = samples
         self.targets = [s[1] for s in samples]
         if self.with_heatmap or self.with_heatmap_v2:
-            self.heatmap_0_Hemorrhages_json = json.load(open(os.path.join(self.root.replace('_aug','')+'_heatmap','0','Hemorrhages','positive_heatmap.json')))
-            self.heatmap_0_Microaneurysms_json = json.load(open(os.path.join(self.root.replace('_aug','')+'_heatmap','0','Microaneurysms','positive_heatmap.json')))
-            self.heatmap_0_Hard_Exudate_json = json.load(open(os.path.join(self.root.replace('_aug','')+'_heatmap','0','Hard_Exudate','positive_heatmap.json')))
-            self.heatmap_0_Cotton_Wool_Spot_json = json.load(open(os.path.join(self.root.replace('_aug','')+'_heatmap','0','Cotton_Wool_Spot','positive_heatmap.json')))
+            self.heatmap_Hemorrhages_jsons=[]
+            self.heatmap_Microaneurysms_jsons=[]
+            self.heatmap_Hard_Exudate_jsons=[]
+            self.heatmap_Cotton_Wool_Spot_jsons = []
+            for stage in range(5):
+                self.heatmap_Hemorrhages_jsons.append(json.load(open(os.path.join(self.root.replace('_aug','')+'_heatmap',str(stage),'Hemorrhages','positive_heatmap.json'))))
+                self.heatmap_Microaneurysms_jsons.append(json.load(open(os.path.join(self.root.replace('_aug','')+'_heatmap',str(stage),'Microaneurysms','positive_heatmap.json'))))
+                self.heatmap_Hard_Exudate_jsons.append(json.load(open(os.path.join(self.root.replace('_aug','')+'_heatmap',str(stage),'Hard_Exudate','positive_heatmap.json'))))
+                self.heatmap_Cotton_Wool_Spot_jsons.append(json.load(open(os.path.join(self.root.replace('_aug','')+'_heatmap',str(stage),'Cotton_Wool_Spot','positive_heatmap.json'))))
 
     def _find_classes(self, dir):
         """
@@ -153,14 +158,25 @@ class DatasetFolder(VisionDataset):
         class_to_idx = {classes[i]: i for i in range(len(classes))}
         return classes, class_to_idx
     def create_heatmap_from_json(self,category_id,input_size,image_filename,original_image_filename,heatmap_path):
+        stage=0
+        if '/0/' in heatmap_path:
+            stage=0
+        elif '/1/' in heatmap_path:
+            stage=1
+        elif '/2/' in heatmap_path:
+            stage=2
+        elif '/3/' in heatmap_path:
+            stage=3
+        elif '/4/' in heatmap_path:
+            stage=4
         if category_id==1:
-            heatmap_json = self.heatmap_0_Hemorrhages_json[original_image_filename]
+            heatmap_json = self.heatmap_Hemorrhages_jsons[stage][original_image_filename]
         elif category_id==2:
-            heatmap_json = self.heatmap_0_Microaneurysms_json[original_image_filename]
+            heatmap_json = self.heatmap_Microaneurysms_jsons[stage][original_image_filename]
         elif category_id==3:
-            heatmap_json = self.heatmap_0_Hard_Exudate_json[original_image_filename]
+            heatmap_json = self.heatmap_Hard_Exudate_jsons[stage][original_image_filename]
         elif category_id==4:
-            heatmap_json = self.heatmap_0_Cotton_Wool_Spot_json[original_image_filename]
+            heatmap_json = self.heatmap_Cotton_Wool_Spot_jsons[stage][original_image_filename]
 
         heatmap = np.zeros((heatmap_json['image_shape'][0],heatmap_json['image_shape'][1]))
         bbox_count=0
