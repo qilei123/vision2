@@ -199,15 +199,15 @@ class DatasetFolder(VisionDataset):
         if '_vhflip' in image_filename:
             original_image_filename = image_filename.replace('_vhflip','')
 
-        if '/0/' in image_path:
+        if True or '/0/' in image_path:
             heatmap1 = self.create_heatmap_from_json(1,input_size,image_filename,original_image_filename,
-                                os.path.join(heat_map_npy_path,lesion_category[0],'positive_heatmap'))
+                                os.path.join(heat_map_npy_path,lesion_category[0],'positive_heatmap_v2'))
             heatmap2 = self.create_heatmap_from_json(2,input_size,image_filename,original_image_filename,
-                                os.path.join(heat_map_npy_path,lesion_category[1],'positive_heatmap'))
+                                os.path.join(heat_map_npy_path,lesion_category[1],'positive_heatmap_v2'))
             heatmap3 = self.create_heatmap_from_json(3,input_size,image_filename,original_image_filename,
-                                os.path.join(heat_map_npy_path,lesion_category[2],'positive_heatmap'))
+                                os.path.join(heat_map_npy_path,lesion_category[2],'positive_heatmap_v2'))
             heatmap4 = self.create_heatmap_from_json(4,input_size,image_filename,original_image_filename,
-                                os.path.join(heat_map_npy_path,lesion_category[3],'positive_heatmap'))
+                                os.path.join(heat_map_npy_path,lesion_category[3],'positive_heatmap_v2'))
             heatmap1 = torch.stack([torch.from_numpy(heatmap1)],0)
             heatmap2 = torch.stack([torch.from_numpy(heatmap2)],0)
             heatmap3 = torch.stack([torch.from_numpy(heatmap3)],0)
