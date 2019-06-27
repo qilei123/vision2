@@ -296,9 +296,13 @@ class DatasetFolder(VisionDataset):
             heatmap = heatmap.type(sample.dtype)
             #print(heatmap.size())
             #print(sample.size())
-            sample = sample[:]+heatmap[0]+heatmap[1]+heatmap[2]+heatmap[3]
+
+            sample1 = sample[:]*heatmap[0]
+            sample2 = sample[:]*heatmap[1]
+            sample3 = sample[:]*heatmap[2]
+            sample4 = sample[:]*heatmap[3]
             
-            sample = sample/5
+            sample = torch.cat((sample,sample1,sample2,sample3,sample4),0)
         if self.with_heatmap_v3:
             heatmap = self.get_heatmap(path,self.input_size)
             heatmap = heatmap.type(sample.dtype)

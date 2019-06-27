@@ -184,9 +184,14 @@ class Inception3(nn.Module):
 
             #x = x[:,0:4]+x[:,0:4]*x[:,4]+x[:,0:4]*x[:,5]+x[:,0:4]*x[:,6]
             x_ch0 = torch.unsqueeze(x[:, 0], 1) / 0.5 - 1
-            x_ch1 = torch.unsqueeze(x[:, 1], 1) / 0.5 - 1
-            x_ch2 = torch.unsqueeze(x[:, 2], 1) / 0.5 - 1
-            x = torch.cat((x_ch0, x_ch1, x_ch2), 1)   
+            for i in range(1,16):
+                x_ch = torch.unsqueeze(x[:, i], 1) / 0.5 - 1
+                if i==1:
+                    temp_x = torch.cat((x_ch0,x_ch),1)
+                else:
+                    temp_x = torch.cat((temp_x,x_ch),1)
+
+            x = temp_x   
         else:
             x_ch0 = torch.unsqueeze(x[:, 0], 1) / 0.5 - 1
             x_ch1 = torch.unsqueeze(x[:, 1], 1) / 0.5 - 1
