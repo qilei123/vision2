@@ -123,6 +123,8 @@ class Inception3(nn.Module):
             self.Conv2d_1a_3x3 = BasicConv2d(3, 32, kernel_size=15, stride=5,padding = 7)
         elif with_heatmap:
             self.Conv2d_1a_3x3_with_heatmap = BasicConv2d(7, 32, kernel_size=3, stride=2)
+        elif with_heatmap_v2:
+            self.Conv2d_1a_3x3_with_heatmap = BasicConv2d(15, 32, kernel_size=3, stride=2)
         else:
             self.Conv2d_1a_3x3 = BasicConv2d(3, 32, kernel_size=3, stride=2)
         self.Conv2d_2a_3x3 = BasicConv2d(32, 32, kernel_size=3)
@@ -203,7 +205,7 @@ class Inception3(nn.Module):
             x2 = self.Conv2d_1a_3x3b(x)
             x3 = self.Conv2d_1a_3x3c(x)
             x = x1+x2+x3
-        elif self.with_heatmap:
+        elif self.with_heatmap or self.with_deephead_v2:
             x = self.Conv2d_1a_3x3_with_heatmap(x)
         else:
             x = self.Conv2d_1a_3x3(x)
