@@ -185,9 +185,9 @@ class Inception3(nn.Module):
         elif self.with_heatmap_v2:
 
             #x = x[:,0:4]+x[:,0:4]*x[:,4]+x[:,0:4]*x[:,5]+x[:,0:4]*x[:,6]
-            print(x.size())
+            #print(x.size())
             x_ch0 = torch.unsqueeze(x[:, 0], 1) / 0.5 - 1
-            for i in range(1,16):
+            for i in range(1,15):
                 x_ch = torch.unsqueeze(x[:, i], 1) / 0.5 - 1
                 if i==1:
                     temp_x = torch.cat((x_ch0,x_ch),1)
