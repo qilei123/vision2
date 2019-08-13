@@ -157,8 +157,8 @@ class DatasetFolder(VisionDataset):
             classes = [d for d in os.listdir(dir) if os.path.isdir(os.path.join(dir, d))]
         classes.sort()
         class_to_idx = {classes[i]: i for i in range(len(classes))}
-        print(class_to_idx)
-        print(classes)
+        #print(class_to_idx)
+        #print(classes)
         if REFERRABLE:
             class_to_idx={'0': 0, '1': 0, '2': 1, '3': 1, '4': 1}
             classes=['0','1']
