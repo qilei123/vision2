@@ -156,6 +156,8 @@ class DatasetFolder(VisionDataset):
             classes = [d for d in os.listdir(dir) if os.path.isdir(os.path.join(dir, d))]
         classes.sort()
         class_to_idx = {classes[i]: i for i in range(len(classes))}
+        print(class_to_idx)
+        print(classes)
         return classes, class_to_idx
     def create_heatmap_from_json(self,category_id,input_size,image_filename,original_image_filename,heatmap_path):
         stage=0
