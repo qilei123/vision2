@@ -11,6 +11,7 @@ import numpy as np
 import cv2
 DEBUG = False
 HEATMAP=True
+REFERRABLE=True
 def has_file_allowed_extension(filename, extensions):
     """Checks if a file is an allowed extension.
 
@@ -158,6 +159,9 @@ class DatasetFolder(VisionDataset):
         class_to_idx = {classes[i]: i for i in range(len(classes))}
         print(class_to_idx)
         print(classes)
+        if REFERRABLE:
+            classes={'0': 0, '1': 0, '2': 1, '3': 1, '4': 1}
+            class_to_idx=['0','1']
         return classes, class_to_idx
     def create_heatmap_from_json(self,category_id,input_size,image_filename,original_image_filename,heatmap_path):
         stage=0
