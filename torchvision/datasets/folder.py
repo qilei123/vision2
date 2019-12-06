@@ -386,14 +386,16 @@ class ImageFolder(DatasetFolder):
     """
 
     def __init__(self, root, transform=None, target_transform=None,
-                 loader=default_loader, is_valid_file=None,input_size=2000,with_heatmap=False,with_heatmap_v2=False):
+                 loader=default_loader, is_valid_file=None,input_size=2000,with_heatmap=False,with_heatmap_v2=False,
+                 DR_REFERRABLE=False):
         super(ImageFolder, self).__init__(root, loader, IMG_EXTENSIONS if is_valid_file is None else None,
                                           transform=transform,
                                           target_transform=target_transform,
                                           is_valid_file=is_valid_file,
                                           input_size=input_size,
                                           with_heatmap=with_heatmap,
-                                          with_heatmap_v2 = with_heatmap_v2)
+                                          with_heatmap_v2 = with_heatmap_v2,
+                                          DR_REFERRABLE=DR_REFERRABLE)
         self.imgs = self.samples
     def get_imgs(self):
         return self.imgs
