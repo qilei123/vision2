@@ -103,7 +103,8 @@ class DatasetFolder(VisionDataset):
     """
 
     def __init__(self, root, loader, extensions=None, transform=None, target_transform=None, is_valid_file=None,
-                        input_size=2000, with_heatmap = False,with_heatmap_v2=False,with_heatmap_v3 = False,with_heatmap_v4 = False):
+                        input_size=2000, with_heatmap = False,with_heatmap_v2=False,with_heatmap_v3 = False,with_heatmap_v4 = False,
+                        DR_REFERRABLE=False):
         super(DatasetFolder, self).__init__(root)
         self.transform = transform
         self.target_transform = target_transform
@@ -112,6 +113,7 @@ class DatasetFolder(VisionDataset):
         self.with_heatmap_v2 = with_heatmap_v2
         self.with_heatmap_v3 = with_heatmap_v3
         self.with_heatmap_v4 = with_heatmap_v4
+        self.DR_REFERRABLE = DR_REFERRABLE
         classes, class_to_idx = self._find_classes(self.root)
         samples = make_dataset(self.root, class_to_idx, extensions, is_valid_file)
         
@@ -159,7 +161,7 @@ class DatasetFolder(VisionDataset):
         class_to_idx = {classes[i]: i for i in range(len(classes))}
         #print(class_to_idx)
         #print(classes)
-        if REFERRABLE:
+        if self.DR_REFERRABLE:
             class_to_idx={'0': 0, '1': 0, '2': 1, '3': 1, '4': 1}
             classes=['0','1']
         return classes, class_to_idx
