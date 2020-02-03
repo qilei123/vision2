@@ -446,7 +446,6 @@ class InceptionAux(nn.Module):
         # N x 768 x 5 x 5
         x = self.conv0(x)
         # N x 128 x 5 x 5
-        print(x.size())
         x = self.conv1(x)
         # N x 768 x 1 x 1
         # Adaptive average pooling
