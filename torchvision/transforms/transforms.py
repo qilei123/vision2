@@ -1047,7 +1047,7 @@ class RandomRotation2(object):
 
     """
 
-    def __init__(self, degrees=180, resample=False, expand=False, center=None):
+    def __init__(self, degrees=[0,360], resample=False, expand=False, center=None):
         if isinstance(degrees, numbers.Number):
             if degrees < 0:
                 raise ValueError("If degrees is a single number, it must be positive.")
@@ -1069,7 +1069,15 @@ class RandomRotation2(object):
             sequence: params to be passed to ``rotate`` for random rotation.
         """
         angle = random.uniform(degrees[0], degrees[1])
-        print("rotate angle:"+str(angle))
+        #print("rotate angle:"+str(angle))
+        if angle>=0 and angle<90:
+            angle=0
+        elif angle>=90 and angle<180:
+            angle=90
+        elif angle>=180 and angle<270:
+            angle=180
+        elif angle>=270 and angle<=360:
+            angle=270
         return angle
 
     def __call__(self, img):
