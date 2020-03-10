@@ -44,6 +44,8 @@ Transforms on PIL Image
 
 .. autoclass:: RandomRotation
 
+.. autoclass:: RandomRotation2
+
 .. autoclass:: RandomSizedCrop
 
 .. autoclass:: RandomVerticalFlip
