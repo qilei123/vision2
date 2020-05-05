@@ -335,11 +335,11 @@ def resnext50_32x4d(pretrained=False, progress=True,**kwargs):
     kwargs['groups'] = 32
     kwargs['width_per_group'] = 4
     return _resnet('resnext50_32x4d', Bottleneck, [3, 4, 6, 3],
-                   pretrained=False, progress=True, **kwargs)
+                   pretrained=False, progress=progress, **kwargs)
 
 
 def resnext101_32x8d(pretrained=False, progress=True,**kwargs):
     kwargs['groups'] = 32
     kwargs['width_per_group'] = 8
     return _resnet('resnext101_32x8d', Bottleneck, [3, 4, 23, 3],
-                   pretrained=False, progress=True, **kwargs)
+                   pretrained=False, progress=progress, **kwargs)
