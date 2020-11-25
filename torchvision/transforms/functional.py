@@ -821,3 +821,35 @@ def to_grayscale(img, num_output_channels=1):
         raise ValueError('num_output_channels should be either 1 or 3')
 
     return img
+
+
+def img_circle(img):
+
+    if not _is_pil_image(img):
+        raise TypeError('img should be PIL Image. Got {}'.format(type(img)))
+
+    ima = img
+    size = ima.size
+    print(size)
+    
+    r2 = min(size[0], size[1])
+    if size[0] != size[1]:
+        ima = ima.resize((r2, r2), Image.ANTIALIAS)
+    
+    r3 = int(r2/2)
+    imb = Image.new('RGBA', (r3*2, r3*2),(255,255,255,0))
+    pima = ima.load() 
+    pimb = imb.load()
+    r = float(r2/2) 
+ 
+    for i in range(r2):
+        for j in range(r2):
+            lx = abs(i-r)
+            ly = abs(j-r)
+            l = (pow(lx,2) + pow(ly,2))** 0.5
+            if l < r3:
+                pimb[i-(r-r3),j-(r-r3)] = pima[i,j]
+ 
+    return imb
+
+

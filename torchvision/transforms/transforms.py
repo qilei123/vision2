@@ -24,7 +24,7 @@ else:
     Iterable = collections.abc.Iterable
 
 
-__all__ = ["Compose", "ToTensor", "ToPILImage", "Normalize", "Resize","Resize2", "Scale", "CenterCrop", "Pad",
+__all__ = ["Compose", "ToTensor", "ToPILImage", "Normalize", "Resize","Resize2","Resize_circle", "Scale", "CenterCrop", "Pad",
            "Lambda", "RandomApply", "RandomChoice", "RandomOrder", "RandomCrop", "RandomHorizontalFlip",
            "RandomVerticalFlip", "RandomResizedCrop", "RandomSizedCrop", "FiveCrop", "TenCrop", "LinearTransformation",
            "ColorJitter", "RandomRotation", "RandomRotation2", "RandomAffine", "Grayscale", "RandomGrayscale",
@@ -1286,3 +1286,39 @@ class RandomGrayscale(object):
 
     def __repr__(self):
         return self.__class__.__name__ + '(p={0})'.format(self.p)
+
+
+class Resize_circle(object):
+    """Resize the input PIL Image to the given size.
+
+    Args:
+        size (sequence or int): Desired output size. If size is a sequence like
+            (h, w), output size will be matched to this. If size is an int,
+            smaller edge of the image will be matched to this number.
+            i.e, if height > width, then image will be rescaled to
+            (size * height / width, size)
+        interpolation (int, optional): Desired interpolation. Default is
+            ``PIL.Image.BILINEAR``
+    """
+
+    def __init__(self, size, interpolation=Image.BILINEAR,circle_rio = 0.5):
+        assert isinstance(size, int) or (isinstance(size, Iterable) and len(size) == 2)
+        self.size = size
+        self.interpolation = interpolation
+        self.circle_rio = circle_rio
+
+    def __call__(self, img):
+        """
+        Args:
+            img (PIL Image): Image to be scaled.
+
+        Returns:
+            PIL Image: Rescaled image.
+        """
+        if random.random() < self.circle_rio:
+            return F.resize(F.img_circle(img), self.size, self.interpolation)
+        return F.resize(img, self.size, self.interpolation)
+
+    def __repr__(self):
+        interpolate_str = _pil_interpolation_to_str[self.interpolation]
+        return self.__class__.__name__ + '(size={0}, interpolation={1})'.format(self.size, interpolate_str)
